@@ -21,7 +21,7 @@ public class PlayerRepository : IPlayerRepository
 
         var result = await _dbContext.SaveChangesAsync();
 
-        if (result > 0)
+        if (result < 1)
             return false;
 
         return true;

@@ -2,7 +2,7 @@
 
 namespace PicEnfermagem.Application.Interfaces;
 
-public interface IPlayerService
+public interface IQuestionService
 {
-    Task<bool> InsertPlayer(PlayerInsertRequest player);
+    Task<bool> InsertAsync(QuestionInsertRequest question);
 }

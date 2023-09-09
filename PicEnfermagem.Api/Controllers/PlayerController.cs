@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PicEnfermagem.Application.DTOs;
+using PicEnfermagem.Application.DTOs.Insert;
 using PicEnfermagem.Application.Interfaces;
 
 namespace PicEnfermagem.Api.Controllers;

@@ -1,4 +1,4 @@
-﻿using PicEnfermagem.Application.DTOs;
+﻿using PicEnfermagem.Application.DTOs.Insert;
 using PicEnfermagem.Application.Interfaces;
 using PicEnfermagem.Application.Interfaces.Repository;
 using PicEnfermagem.Domain.Factories;

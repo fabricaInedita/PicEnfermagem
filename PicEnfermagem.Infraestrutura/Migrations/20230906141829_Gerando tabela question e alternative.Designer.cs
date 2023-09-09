@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PicEnfermagem.Infraestrutura.Context;
@@ -11,9 +12,11 @@ using PicEnfermagem.Infraestrutura.Context;
 namespace PicEnfermagem.Infraestrutura.Migrations
 {
     [DbContext(typeof(PicEnfermagemDb))]
-    partial class PicEnfermagemDbModelSnapshot : ModelSnapshot
+    [Migration("20230906141829_Gerando tabela question e alternative")]
+    partial class Gerandotabelaquestionealternative
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,30 +51,6 @@ namespace PicEnfermagem.Infraestrutura.Migrations
                     b.HasIndex("QuestionId");
 
                     b.ToTable("alternative");
-                });
-
-            modelBuilder.Entity("PicEnfermagem.Domain.Entities.Category", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("RegistrationDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("category");
                 });
 
             modelBuilder.Entity("PicEnfermagem.Domain.Entities.Player", b =>
@@ -120,9 +99,6 @@ namespace PicEnfermagem.Infraestrutura.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -131,8 +107,6 @@ namespace PicEnfermagem.Infraestrutura.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.ToTable("question");
                 });
@@ -146,17 +120,6 @@ namespace PicEnfermagem.Infraestrutura.Migrations
                         .IsRequired();
 
                     b.Navigation("Question");
-                });
-
-            modelBuilder.Entity("PicEnfermagem.Domain.Entities.Question", b =>
-                {
-                    b.HasOne("PicEnfermagem.Domain.Entities.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("PicEnfermagem.Domain.Entities.Question", b =>

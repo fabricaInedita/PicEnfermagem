@@ -12,12 +12,20 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 //Services
 builder.Services.AddScoped<IPlayerService, PlayerService>();
+builder.Services.AddScoped<IQuestionService, QuestionService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+
+//Repositories
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
+builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 //Connection Ef core
 builder.Services.AddDbContext<PicEnfermagemDb>(opts => opts.UseNpgsql(builder.Configuration.GetConnectionString("connection")));
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
