@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\marco\\OneDrive\\Área de Trabalho\\Hermes\\PicEnfermagem\\PicEnfermagem.Domain\\PicEnfermagem.Domain.csproj": {}
+    "C:\\Users\\Administrador\\source\\repos\\PicEnfermagem\\PicEnfermagem.Domain\\PicEnfermagem.Domain.csproj": {}
   },
   "projects": {
-    "C:\\Users\\marco\\OneDrive\\Área de Trabalho\\Hermes\\PicEnfermagem\\PicEnfermagem.Domain\\PicEnfermagem.Domain.csproj": {
+    "C:\\Users\\Administrador\\source\\repos\\PicEnfermagem\\PicEnfermagem.Domain\\PicEnfermagem.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\marco\\OneDrive\\Área de Trabalho\\Hermes\\PicEnfermagem\\PicEnfermagem.Domain\\PicEnfermagem.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\Administrador\\source\\repos\\PicEnfermagem\\PicEnfermagem.Domain\\PicEnfermagem.Domain.csproj",
         "projectName": "PicEnfermagem.Domain",
-        "projectPath": "C:\\Users\\marco\\OneDrive\\Área de Trabalho\\Hermes\\PicEnfermagem\\PicEnfermagem.Domain\\PicEnfermagem.Domain.csproj",
-        "packagesPath": "C:\\Users\\marco\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\marco\\OneDrive\\Área de Trabalho\\Hermes\\PicEnfermagem\\PicEnfermagem.Domain\\obj\\",
+        "projectPath": "C:\\Users\\Administrador\\source\\repos\\PicEnfermagem\\PicEnfermagem.Domain\\PicEnfermagem.Domain.csproj",
+        "packagesPath": "C:\\Users\\Administrador\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Administrador\\Source\\Repos\\PicEnfermagem\\PicEnfermagem.Domain\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\marco\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Administrador\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -59,7 +55,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
         }
       }
     }

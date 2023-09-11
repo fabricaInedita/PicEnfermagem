@@ -22,4 +22,15 @@ public class PlayerController : Controller
 
         return BadRequest();
     }
+
+    [HttpGet]
+    public async Task<ActionResult> GetAsync()
+    {
+        var response = await _playerService.GetAsync();
+
+        if (!response.Sucess)
+            return Ok(response.Data);
+
+        return BadRequest(response);
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PicEnfermagem.Application.DTOs.Response;
 using PicEnfermagem.Application.Interfaces.Repository;
 using PicEnfermagem.Domain.Entities;
 using PicEnfermagem.Infraestrutura.Context;
@@ -25,5 +26,20 @@ public class PlayerRepository : IPlayerRepository
             return false;
 
         return true;
+    }
+
+    public async Task<IEnumerable<PlayerResponse>> GetAsync()
+    {
+        var response = (from player in _players
+                        select new PlayerResponse()
+                        {
+                            Name = player.Name,
+                            Age = player.Age,
+                            Period = player.Period,
+                            Phone = player.Phone,
+                            Course = player.Course,
+                            Email = player.Email
+                        }).AsEnumerable();
+        return response;
     }
 }
