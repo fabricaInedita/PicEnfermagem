@@ -1,4 +1,5 @@
 ﻿using PicEnfermagem.Application.DTOs.Insert;
+using PicEnfermagem.Application.DTOs.Response;
 using PicEnfermagem.Application.Interfaces;
 using PicEnfermagem.Application.Interfaces.Repository;
 using PicEnfermagem.Domain.Factories;
@@ -24,5 +25,16 @@ public class PlayerService : IPlayerService
             player.Email);
 
         return await _playerRep.InsertPlayer(newPlayer);
+    }
+
+    public async Task<DefaultResponse> GetAsync()
+    {
+        var response = new DefaultResponse();
+
+        var players = await _playerRep.GetAsync();
+
+        response.Data.AddRange(players);
+
+        return response;
     }
 }
