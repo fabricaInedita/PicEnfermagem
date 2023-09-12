@@ -1,38 +1,21 @@
-using Microsoft.EntityFrameworkCore;
-using PicEnfermagem.Application.Interfaces;
-using PicEnfermagem.Application.Interfaces.Repository;
-using PicEnfermagem.Application.Services;
-using PicEnfermagem.Infraestrutura.Context;
-using PicEnfermagem.Infraestrutura.Repositories;
+using PicEnfermagem.Api.Extensions;
+using PicEnfermagem.Api.Ioc;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-builder.Services.AddControllers();
-
-builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-//Services
-builder.Services.AddScoped<IPlayerService, PlayerService>();
-builder.Services.AddScoped<IQuestionService, QuestionService>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-
-//Repositories
-builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
-builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-
-//Connection Ef core
-builder.Services.AddDbContext<PicEnfermagemDb>(opts => opts.UseNpgsql(builder.Configuration.GetConnectionString("connection")));
+builder.Services.AddSwagger();
+builder.Services.RegisterServices(builder.Configuration);
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+
+if (app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
