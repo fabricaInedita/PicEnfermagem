@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PicEnfermagem.Application.DTOs.Response;
 using PicEnfermagem.Application.Interfaces.Repository;
 using PicEnfermagem.Domain.Entities;
 using PicEnfermagem.Infraestrutura.Context;
@@ -24,5 +25,29 @@ public class QuestionRepository : IQuestionRepository
             return false;
 
         return true;
+    }
+
+    public async Task<IEnumerable<QuestionResponse>> GetAllAsync()
+    {
+        var questions = (from question in _question
+                         .AsNoTracking()
+                         .Include(x => x.Category)
+                         .Include(x => x.Alternatives)
+                         select new QuestionResponse()
+                         {
+                             Statement = question.Statement,
+                             Alternatives = (ICollection<AlternativeResponse>)question.Alternatives.Select(alternative => new AlternativeResponse()
+                             {
+                                 IsCorrect = alternative.IsCorrect,
+                                 Option = alternative.Option
+                             }),
+                             Category = new CategoryResponse()
+                             {
+                                 Description = question.Category.Description,
+                                 Name = question.Category.Name
+                             }
+                         }).AsEnumerable();
+
+        return questions;
     }
 }

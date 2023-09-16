@@ -23,4 +23,12 @@ public class QuestionsController : ControllerBase
 
         return BadRequest();
     }
+
+    [HttpGet]
+    public async Task<ActionResult> GetAllAsync()
+    {
+        var response = await questionService.GetAllAsync();
+
+        return Ok(response);
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using PicEnfermagem.Application.DTOs.Insert;
+using PicEnfermagem.Application.DTOs.Response;
 using PicEnfermagem.Application.Interfaces;
 using PicEnfermagem.Application.Interfaces.Repository;
 using PicEnfermagem.Domain.Entities;
@@ -27,6 +28,10 @@ public class QuestionService : IQuestionService
         return await _questionRep.InsertAsync(question);
     }
 
+    public async Task<IEnumerable<QuestionResponse>> GetAllAsync()
+    {
+        return await _questionRep.GetAllAsync();
+    }
     private async Task<List<Alternative>> PrepareAlternativesAsync(ICollection<AlternativeInsertRequest> alternativesDto)
     {
         var alternatives = new List<Alternative>();
