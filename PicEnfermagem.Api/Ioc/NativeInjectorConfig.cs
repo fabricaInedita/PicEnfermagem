@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using PicEnfermagem.Infraestrutura.Context;
 using PicEnfermagem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using PicEnfermagem.Identity.Services;
+using PicEnfermagem.Api.Extensions;
 
 namespace PicEnfermagem.Api.Ioc;
 
@@ -18,10 +20,13 @@ public static class NativeInjectorConfig
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
 
+        services.AddAuthentication(configuration);
+
         //Services
         services.AddScoped<IPlayerService, PlayerService>();
         services.AddScoped<IQuestionService, QuestionService>();
         services.AddScoped<ICategoryService, CategoryService>();
+        services.AddScoped<IIdentityService, IdentityService>();
 
         //Repositories
         services.AddScoped<IPlayerRepository, PlayerRepository>();
@@ -41,6 +46,7 @@ public static class NativeInjectorConfig
             (opts => opts
             .UseNpgsql(configuration
             .GetConnectionString("connection")));
+
 
         //Cors
         services.AddCors(options =>
