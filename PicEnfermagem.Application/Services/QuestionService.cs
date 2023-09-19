@@ -32,6 +32,10 @@ public class QuestionService : IQuestionService
     {
         return await _questionRep.GetAllAsync();
     }
+    public async Task<IEnumerable<QuestionResponse>> GetByCategoryAsync(int categoryId)
+    {
+        return await _questionRep.GetByCategoryId(categoryId);
+    }
     private async Task<List<Alternative>> PrepareAlternativesAsync(ICollection<AlternativeInsertRequest> alternativesDto)
     {
         var alternatives = new List<Alternative>();

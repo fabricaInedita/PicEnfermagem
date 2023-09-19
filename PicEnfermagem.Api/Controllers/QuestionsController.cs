@@ -31,4 +31,13 @@ public class QuestionsController : ControllerBase
 
         return Ok(response);
     }
+
+    [HttpGet]
+    [Route("/getByCategory")]
+    public async Task<ActionResult> GetByCategoryAsync([FromQuery] int categoryId)
+    {
+        var response = await questionService.GetByCategoryAsync(categoryId);
+
+        return Ok(response);
+    }
 }

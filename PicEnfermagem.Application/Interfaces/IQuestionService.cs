@@ -7,4 +7,5 @@ public interface IQuestionService
 {
     Task<bool> InsertAsync(QuestionInsertRequest question);
     Task<IEnumerable<QuestionResponse>> GetAllAsync();
+    Task<IEnumerable<QuestionResponse>> GetByCategoryAsync(int categoryId);
 }

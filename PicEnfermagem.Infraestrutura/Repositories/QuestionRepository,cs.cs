@@ -21,7 +21,7 @@ public class QuestionRepository : IQuestionRepository
 
         var response = await _context.SaveChangesAsync();
 
-        if(response < 1)
+        if (response < 1)
             return false;
 
         return true;
@@ -50,4 +50,29 @@ public class QuestionRepository : IQuestionRepository
 
         return questions;
     }
+
+
+    public async Task<IEnumerable<QuestionResponse>> GetByCategoryId(int categoryId)
+    {
+        var questions = (from question in _question
+                        .AsNoTracking()
+                        .Where(x => x.CategoryId == categoryId)
+                         select new QuestionResponse()
+                         {
+                             Alternatives = (ICollection<AlternativeResponse>)question.Alternatives.Select(alternative => new AlternativeResponse()
+                             {
+                                 IsCorrect = alternative.IsCorrect,
+                                 Option = alternative.Option
+                             }),
+                             Category = new CategoryResponse()
+                             {
+                                 Description = question.Category.Description,
+                                 Name = question.Category.Name
+                             },
+                             Statement = question.Statement
+                         }).AsEnumerable();
+
+        return questions;
+    }
+
 }
