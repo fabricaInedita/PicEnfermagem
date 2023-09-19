@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PicEnfermagem.Application\PicEnfermagem.Application.csproj" />
+    <ProjectReference Include="..\PicEnfermagem.Identity\PicEnfermagem.Identity.csproj" />
     <ProjectReference Include="..\PicEnfermagem.Infraestrutura\PicEnfermagem.Infraestrutura.csproj" />
   </ItemGroup>
 
