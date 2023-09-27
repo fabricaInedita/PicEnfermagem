@@ -2,7 +2,7 @@
 
 namespace PicEnfermagem.Application.DTOs.Insert;
 
-public class UserRegisterRequest
+public class UserAdminRegisterRequest
 {
     [Required(ErrorMessage = "O nome deve ser informado")]
     [StringLength(50, ErrorMessage = "O nome deve conter até 50 caracteres.")]

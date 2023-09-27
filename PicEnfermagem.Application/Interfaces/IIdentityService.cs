@@ -7,7 +7,8 @@ namespace PicEnfermagem.Application.Interfaces;
 public interface IIdentityService
 {
     Task<UserLoginResponse> LoginAsync(LoginRequest loginRequest);
-    Task<UserRegisterResponse> RegisterUser(UserRegisterRequest userRegister);
+    Task<UserRegisterResponse> RegisterUserAdmin(UserAdminRegisterRequest userRegister);
+    Task<UserRegisterResponse> RegisterUser(UserInsertRequest userRegister);
     Task<DefaultResponse> DeleteUser(string email);
     Task<IEnumerable<UserResponse>> GetUser();
 }

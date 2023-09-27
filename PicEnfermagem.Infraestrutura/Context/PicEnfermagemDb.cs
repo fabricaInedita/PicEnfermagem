@@ -9,7 +9,6 @@ public class PicEnfermagemDb : IdentityDbContext<ApplicationUser>
 {
     public PicEnfermagemDb(DbContextOptions options) : base(options) { }
 
-    public DbSet<Player> player { get; set; }
     public DbSet<Question> question { get; set; }
     public DbSet<Alternative> alternative { get; set; }
     public DbSet<Category> category { get; set; }

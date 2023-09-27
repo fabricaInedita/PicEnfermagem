@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PicEnfermagem.Application.DTOs.Insert;
 using PicEnfermagem.Application.Interfaces;
 
@@ -13,6 +14,7 @@ public class QuestionsController : ControllerBase
         this.questionService = questionService;
     }
 
+    [Authorize(Policy = "AdminRole")]
     [HttpPost]
     public async Task<ActionResult> PostAsync(QuestionInsertRequest model)
     {
@@ -23,6 +25,7 @@ public class QuestionsController : ControllerBase
 
         return BadRequest();
     }
+
 
     [HttpGet]
     public async Task<ActionResult> GetAllAsync()

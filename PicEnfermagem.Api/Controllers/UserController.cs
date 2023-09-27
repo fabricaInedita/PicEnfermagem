@@ -47,8 +47,23 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
+    [Route("user_admin/register")]
+    public async Task<ActionResult> UserAdminRegisterAsync(UserAdminRegisterRequest userRegisterRequest)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var result = await _identityService.RegisterUserAdmin(userRegisterRequest);
+
+        if (result.Success)
+            return Ok(result);
+
+        return BadRequest(result);
+    }
+
+    [HttpPost]
     [Route("user/register")]
-    public async Task<ActionResult> UserRegisterAsync(UserRegisterRequest userRegisterRequest)
+    public async Task<ActionResult> UserRegisterAsync(UserInsertRequest userRegisterRequest)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);

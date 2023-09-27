@@ -10,6 +10,11 @@ public static class AuthenticationSetup
 {
     public static void AddAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
+
+        services.AddSession(options =>
+        {
+        });
+
         var jwtAppSettingOptions = configuration.GetSection(nameof(JwtOptions));
         var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration.GetSection("JwtOptions:SecurityKey").Value));
 
@@ -63,10 +68,18 @@ public static class AuthenticationSetup
     {
         services.AddAuthorization(options =>
         {
-            options.AddPolicy("LoggedInPolicy", policy =>
+            options.AddPolicy("AdminRole", policy =>
             {
-                policy.RequireAuthenticatedUser();
+                policy.RequireRole("Admin");
+                policy.RequireAssertion(context =>
+                {
+                    return context.User.HasClaim(claim =>
+                        claim.Type == "permissions" &&
+                        (claim.Value == "CriarPergunta" || claim.Value == "DeletarPergunta" || claim.Value == "EditarPergunta" || claim.Value == "VisualizarPergunta"));
+                });
             });
         });
+
+
     }
 }

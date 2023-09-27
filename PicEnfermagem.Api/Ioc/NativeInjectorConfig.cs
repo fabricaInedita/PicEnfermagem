@@ -21,15 +21,16 @@ public static class NativeInjectorConfig
         services.AddSwaggerGen();
 
         services.AddAuthentication(configuration);
+        services.AddAuthorizationPolicies();
+        services.AddDistributedMemoryCache();
+
 
         //Services
-        services.AddScoped<IPlayerService, PlayerService>();
         services.AddScoped<IQuestionService, QuestionService>();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IIdentityService, IdentityService>();
 
         //Repositories
-        services.AddScoped<IPlayerRepository, PlayerRepository>();
         services.AddScoped<IQuestionRepository, QuestionRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
 

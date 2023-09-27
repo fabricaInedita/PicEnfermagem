@@ -10,7 +10,7 @@ builder.Services.RegisterServices(builder.Configuration);
 var app = builder.Build();
 
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -18,7 +18,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
-
+app.UseSession();
 app.UseAuthorization();
 
 app.MapControllers();
