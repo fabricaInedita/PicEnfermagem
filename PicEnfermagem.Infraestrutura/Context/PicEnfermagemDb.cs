@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PicEnfermagem.Domain.Entities;
 using PicEnfermagem.Infraestrutura.Mapping;
@@ -7,7 +8,11 @@ namespace PicEnfermagem.Infraestrutura.Context;
 
 public class PicEnfermagemDb : IdentityDbContext<ApplicationUser>
 {
-    public PicEnfermagemDb(DbContextOptions options) : base(options) { }
+    internal readonly IHttpContextAccessor _contextAcessor;
+    public PicEnfermagemDb(DbContextOptions options, IHttpContextAccessor contextAcessor) : base(options)
+    {
+        _contextAcessor = contextAcessor;
+    }
 
     public DbSet<Question> question { get; set; }
     public DbSet<Alternative> alternative { get; set; }

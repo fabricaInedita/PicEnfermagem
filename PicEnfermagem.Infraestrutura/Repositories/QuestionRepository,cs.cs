@@ -10,10 +10,12 @@ public class QuestionRepository : IQuestionRepository
 {
     private readonly PicEnfermagemDb _context;
     private readonly DbSet<Question> _question;
-    public QuestionRepository(PicEnfermagemDb context)
+    private readonly IAnswerRepository _answerRepository;
+    public QuestionRepository(PicEnfermagemDb context, IAnswerRepository answerRepository)
     {
         _context = context;
         _question = _context.Set<Question>();
+        _answerRepository = answerRepository;
     }
     public async Task<bool> InsertAsync(Question question)
     {
