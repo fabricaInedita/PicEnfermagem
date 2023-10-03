@@ -14,7 +14,9 @@ public class CategoryController : ControllerBase
     {
         _categoryService = categoryService;
     }
-
+    //Preciso armazenar as resposta do user por request no perfil dele
+    //Retornar no get inicial se as perguntas ja foram respondidas 
+    //armazenar tempo de resposta de cada pergunta para depois fazer uma comparação
     [HttpGet]
     public async Task<ActionResult> GetAsync()
     {

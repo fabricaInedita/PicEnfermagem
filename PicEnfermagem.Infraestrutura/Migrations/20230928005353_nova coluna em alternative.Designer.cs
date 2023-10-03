@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PicEnfermagem.Infraestrutura.Context;
@@ -11,9 +12,11 @@ using PicEnfermagem.Infraestrutura.Context;
 namespace PicEnfermagem.Infraestrutura.Migrations
 {
     [DbContext(typeof(PicEnfermagemDb))]
-    partial class PicEnfermagemDbModelSnapshot : ModelSnapshot
+    [Migration("20230928005353_nova coluna em alternative")]
+    partial class novacolunaemalternative
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -176,7 +179,7 @@ namespace PicEnfermagem.Infraestrutura.Migrations
                     b.Property<int>("QuestionId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("RegistrationDate")
+                    b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -184,36 +187,6 @@ namespace PicEnfermagem.Infraestrutura.Migrations
                     b.HasIndex("QuestionId");
 
                     b.ToTable("alternative");
-                });
-
-            modelBuilder.Entity("PicEnfermagem.Domain.Entities.Answer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsCorrectAnswer")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("RegistrationDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("SecondsAnswer")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("answer");
                 });
 
             modelBuilder.Entity("PicEnfermagem.Domain.Entities.ApplicationUser", b =>
@@ -300,7 +273,7 @@ namespace PicEnfermagem.Infraestrutura.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("RegistrationDate")
+                    b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -319,7 +292,7 @@ namespace PicEnfermagem.Infraestrutura.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("RegistrationDate")
+                    b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Statement")
@@ -395,15 +368,6 @@ namespace PicEnfermagem.Infraestrutura.Migrations
                     b.Navigation("Question");
                 });
 
-            modelBuilder.Entity("PicEnfermagem.Domain.Entities.Answer", b =>
-                {
-                    b.HasOne("PicEnfermagem.Domain.Entities.ApplicationUser", "User")
-                        .WithMany("Answers")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("PicEnfermagem.Domain.Entities.Question", b =>
                 {
                     b.HasOne("PicEnfermagem.Domain.Entities.Category", "Category")
@@ -413,11 +377,6 @@ namespace PicEnfermagem.Infraestrutura.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("PicEnfermagem.Domain.Entities.ApplicationUser", b =>
-                {
-                    b.Navigation("Answers");
                 });
 
             modelBuilder.Entity("PicEnfermagem.Domain.Entities.Question", b =>

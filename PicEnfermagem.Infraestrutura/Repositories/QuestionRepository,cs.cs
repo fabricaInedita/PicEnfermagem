@@ -35,6 +35,7 @@ public class QuestionRepository : IQuestionRepository
                          .Include(x => x.Alternatives)
                          select new QuestionResponse()
                          {
+                             Id = question.Id,
                              Statement = question.Statement,
                              Alternatives = (ICollection<AlternativeResponse>)question.Alternatives.Select(alternative => new AlternativeResponse()
                              {

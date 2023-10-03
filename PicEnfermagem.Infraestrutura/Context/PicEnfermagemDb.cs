@@ -11,6 +11,7 @@ public class PicEnfermagemDb : IdentityDbContext<ApplicationUser>
 
     public DbSet<Question> question { get; set; }
     public DbSet<Alternative> alternative { get; set; }
+    public DbSet<Answer> answer { get; set; }
     public DbSet<Category> category { get; set; }
     public DbSet<ApplicationUser> user { get; set; }
 

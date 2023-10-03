@@ -8,7 +8,9 @@ using PicEnfermagem.Application.DTOs.Insert;
 using PicEnfermagem.Application.DTOs.Response;
 using PicEnfermagem.Application.Interfaces;
 using PicEnfermagem.Domain.Entities;
+using PicEnfermagem.Domain.Factories;
 using PicEnfermagem.Identity.Utils;
+using PicEnfermagem.Infraestrutura.Context;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -19,16 +21,18 @@ public class IdentityService : IIdentityService
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IServiceProvider _serviceProvider;
     private readonly JwtOptions _jwtOptions;
+    private readonly PicEnfermagemDb _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
 
-    public IdentityService(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IOptions<JwtOptions> jwtOptions, IServiceProvider serviceProvider, IHttpContextAccessor httpContextAccessor)
+    public IdentityService(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IOptions<JwtOptions> jwtOptions, IServiceProvider serviceProvider, IHttpContextAccessor httpContextAccessor, PicEnfermagemDb context)
     {
         _signInManager = signInManager;
         _userManager = userManager;
         _jwtOptions = jwtOptions.Value;
         _serviceProvider = serviceProvider;
         _httpContextAccessor = httpContextAccessor;
+        _context = context;
     }
 
     public async Task<UserLoginResponse> LoginAsync(LoginRequest userLogin)
@@ -63,7 +67,6 @@ public class IdentityService : IIdentityService
 
         return userLoginResponse;
     }
-
     public async Task<UserRegisterResponse> RegisterUserAdmin(UserAdminRegisterRequest userRegister)
     {
         var user = new ApplicationUser()
@@ -170,7 +173,6 @@ public class IdentityService : IIdentityService
 
         return userRegisterResponse;
     }
-
     public async Task<IEnumerable<UserResponse>> GetUser()
     {
         var result = (from users in _userManager.Users
@@ -192,6 +194,20 @@ public class IdentityService : IIdentityService
         response.Sucess = result.Succeeded;
 
         return response;
+    }
+    public async Task<bool> PostAnswer(AnswerInsertRequest dto, ClaimsPrincipal claimUser)
+    {
+        var user = await _userManager.GetUserAsync(claimUser);
+        var answer = AnswerFactory.Create(dto.QuestionId, dto.IsCorrectAnswer, dto.SecondsAnswer);
+      
+        user.Answers.Add(answer);
+
+        var response = await _context.SaveChangesAsync();
+
+        if (response < 1)
+            return false;
+
+        return true;
     }
     private async Task<UserLoginResponse> GerarCredenciais(string email)
     {

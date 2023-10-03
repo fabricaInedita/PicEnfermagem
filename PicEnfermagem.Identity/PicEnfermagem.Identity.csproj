@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PicEnfermagem.Application\PicEnfermagem.Application.csproj" />
     <ProjectReference Include="..\PicEnfermagem.Domain\PicEnfermagem.Domain.csproj" />
+    <ProjectReference Include="..\PicEnfermagem.Infraestrutura\PicEnfermagem.Infraestrutura.csproj" />
   </ItemGroup>
 
 </Project>

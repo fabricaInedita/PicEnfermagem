@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PicEnfermagem.Infraestrutura.Context;
@@ -11,9 +12,11 @@ using PicEnfermagem.Infraestrutura.Context;
 namespace PicEnfermagem.Infraestrutura.Migrations
 {
     [DbContext(typeof(PicEnfermagemDb))]
-    partial class PicEnfermagemDbModelSnapshot : ModelSnapshot
+    [Migration("20231003163354_rename table answer")]
+    partial class renametableanswer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -194,6 +197,9 @@ namespace PicEnfermagem.Infraestrutura.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsCorrectAnswer")
                         .HasColumnType("boolean");
 
@@ -206,12 +212,9 @@ namespace PicEnfermagem.Infraestrutura.Migrations
                     b.Property<int>("SecondsAnswer")
                         .HasColumnType("integer");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("answer");
                 });
@@ -397,11 +400,9 @@ namespace PicEnfermagem.Infraestrutura.Migrations
 
             modelBuilder.Entity("PicEnfermagem.Domain.Entities.Answer", b =>
                 {
-                    b.HasOne("PicEnfermagem.Domain.Entities.ApplicationUser", "User")
+                    b.HasOne("PicEnfermagem.Domain.Entities.ApplicationUser", null)
                         .WithMany("Answers")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
+                        .HasForeignKey("ApplicationUserId");
                 });
 
             modelBuilder.Entity("PicEnfermagem.Domain.Entities.Question", b =>

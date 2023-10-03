@@ -75,4 +75,16 @@ public class UserController : ControllerBase
 
         return BadRequest(result);
     }
+
+    [HttpPost]
+    [Route("user/postAnswer")]
+    public async Task<ActionResult> PostAnswer(AnswerInsertRequest question)
+    {
+        var result = await _identityService.PostAnswer(question, User);
+
+        if (result)
+            return Ok();
+
+        return BadRequest();
+    }
 }

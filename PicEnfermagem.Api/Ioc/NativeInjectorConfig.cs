@@ -29,10 +29,12 @@ public static class NativeInjectorConfig
         services.AddScoped<IQuestionService, QuestionService>();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IIdentityService, IdentityService>();
+        services.AddScoped<IAnswerService, AnswerService>();
 
         //Repositories
         services.AddScoped<IQuestionRepository, QuestionRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<IAnswerRepository, AnswerRepository>();
 
         //Context
         services.AddIdentity<ApplicationUser, IdentityRole>()

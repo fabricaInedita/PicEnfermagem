@@ -42,7 +42,7 @@ public class QuestionService : IQuestionService
 
         foreach(var alternativeActual in alternativesDto)
         {
-            alternatives.Add(AlternativeFactory.Create(alternativeActual.Option, alternativeActual.IsCorrect));
+            alternatives.Add(AlternativeFactory.Create(alternativeActual.Option, alternativeActual.Description, alternativeActual.IsCorrect));
         }
 
         return alternatives;
