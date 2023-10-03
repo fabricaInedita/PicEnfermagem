@@ -11,10 +11,12 @@ public class QuestionService : IQuestionService
 {
     private readonly IQuestionRepository _questionRep;
     private readonly ICategoryRepository _categoryRep;
-    public QuestionService(IQuestionRepository questionRep, ICategoryRepository categoryRep)
+    private readonly IAnswerRepository _answerRep;
+    public QuestionService(IQuestionRepository questionRep, ICategoryRepository categoryRep, IAnswerRepository answerRep)
     {
         _questionRep = questionRep;
         _categoryRep = categoryRep;
+        _answerRep = answerRep;
     }
 
     public async Task<bool> InsertAsync(QuestionInsertRequest questionDto)
@@ -30,7 +32,17 @@ public class QuestionService : IQuestionService
 
     public async Task<IEnumerable<QuestionResponse>> GetAllAsync()
     {
-        return await _questionRep.GetAllAsync();
+        var questions = (await _questionRep.GetAllAsync()).ToList();
+        var answers = await _answerRep.GetAll();
+
+        foreach(var item in answers) 
+        {
+            var questionResponse = questions.Where(x => x.Id == item.QuestionId).FirstOrDefault();
+
+            questions.Remove(questionResponse);
+        }
+
+        return questions;
     }
     public async Task<IEnumerable<QuestionResponse>> GetByCategoryAsync(int categoryId)
     {

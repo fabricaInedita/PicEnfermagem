@@ -6,4 +6,5 @@ namespace PicEnfermagem.Application.Interfaces;
 public interface IAnswerService
 {
     Task<bool> PostAnswer(AnswerInsertRequest dto, ClaimsPrincipal claimUser);
+    
 }
