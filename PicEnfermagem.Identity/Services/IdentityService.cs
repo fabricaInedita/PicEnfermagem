@@ -23,7 +23,7 @@ public class IdentityService : IIdentityService
     private readonly JwtOptions _jwtOptions;
     private readonly PicEnfermagemDb _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
-
+    private string _userId;
 
     public IdentityService(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IOptions<JwtOptions> jwtOptions, IServiceProvider serviceProvider, IHttpContextAccessor httpContextAccessor, PicEnfermagemDb context)
     {
@@ -33,14 +33,16 @@ public class IdentityService : IIdentityService
         _serviceProvider = serviceProvider;
         _httpContextAccessor = httpContextAccessor;
         _context = context;
+        _userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
     }
 
     public async Task<UserLoginResponse> LoginAsync(LoginRequest userLogin)
     {
-        SignInResult signInResult = await _signInManager.PasswordSignInAsync(userLogin.Email, userLogin.Password, isPersistent: false, lockoutOnFailure: true);
+        SignInResult signInResult = await _signInManager.PasswordSignInAsync(userLogin.Username, userLogin.Password, isPersistent: false, lockoutOnFailure: true);
         if (signInResult.Succeeded)
         {
-            var credenciais = await GerarCredenciais(userLogin.Email);
+            var credenciais = await GerarCredenciais(userLogin.Username);
             return credenciais;
         }
 
@@ -71,9 +73,9 @@ public class IdentityService : IIdentityService
     {
         var user = new ApplicationUser()
         {
-            Email = userRegister.Email,
+            Email = userRegister.Username,
             Name = userRegister.Name,
-            UserName = userRegister.Email,
+            UserName = userRegister.Username,
         };
 
         IdentityResult result = await _userManager.CreateAsync(user, userRegister.Password);
@@ -133,8 +135,8 @@ public class IdentityService : IIdentityService
     {
         var user = new ApplicationUser()
         {
-            UserName = userRegister.Code,
-            Name = userRegister.Code
+            UserName = userRegister.Username,
+            Name = userRegister.Username
         };
 
         IdentityResult result = await _userManager.CreateAsync(user, userRegister.Password);
@@ -179,12 +181,34 @@ public class IdentityService : IIdentityService
                       select new UserResponse()
                       {
                           Email = users.Email,
-                          Name = users.Name
+                          Name = users.Name,
+                          Pontos = users.Punctuation
                       }).AsEnumerable();
 
         return result;
                            
     }
+
+    public async Task<int> GetPunctuationByUserLogged()
+    {
+        var punctuation = (await _userManager.FindByIdAsync(_userId)).Punctuation;
+
+        return punctuation;
+    }
+    public async Task<IEnumerable<UserResponse>> GetRank()
+    {
+        var result = (from users in _userManager.Users
+                      select new UserResponse()
+                      {
+                          Email = users.Email,
+                          Name = users.Name,
+                          Pontos = users.Punctuation
+                      }).OrderByDescending(x => x.Pontos).Take(10);
+
+        return result;
+                           
+    }
+
     public async Task<DefaultResponse> DeleteUser(string email)
     {
         var response = new DefaultResponse();
@@ -198,7 +222,7 @@ public class IdentityService : IIdentityService
     public async Task<bool> PostAnswer(AnswerInsertRequest dto, ClaimsPrincipal claimUser)
     {
         var user = await _userManager.GetUserAsync(claimUser);
-        var answer = AnswerFactory.Create(dto.QuestionId, dto.IsCorrectAnswer, dto.SecondsAnswer);
+        var answer = AnswerFactory.Create(dto.QuestionId, dto.Punctuation);
       
         user.Answers.Add(answer);
 

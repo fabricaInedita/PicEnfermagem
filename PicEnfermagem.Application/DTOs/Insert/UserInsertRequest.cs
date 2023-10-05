@@ -5,7 +5,7 @@ namespace PicEnfermagem.Application.DTOs.Insert;
 public class UserInsertRequest
 {
     [Required(ErrorMessage = "O código de aluno deve ser informado.")]
-    public string Code { get; set; }
+    public string Username { get; set; }
     [Required(ErrorMessage = "A senha deve ser informada.")]
     public string Password { get; set; }
     [Compare(nameof(Password), ErrorMessage = "As senhas devem ser iguais.")]

@@ -1,4 +1,6 @@
-﻿namespace PicEnfermagem.Application.DTOs.Insert;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PicEnfermagem.Application.DTOs.Insert;
 
 public class AlternativeInsertRequest
 {

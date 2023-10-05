@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using PicEnfermagem.Application.DTOs.Response;
 using PicEnfermagem.Application.Interfaces.Repository;
 using PicEnfermagem.Domain.Entities;
-using PicEnfermagem.Domain.Factories;
 using PicEnfermagem.Infraestrutura.Context;
 using System.Security.Claims;
 
@@ -29,6 +28,8 @@ public class AnswerRepository : IAnswerRepository
     {
         var user = await _user.GetUserAsync(claimUser);
         entity.UserId = user.Id;
+        user.Punctuation += entity.Punctuation;
+
         _answer.Add(entity);
         var response = await _context.SaveChangesAsync();
 
@@ -45,9 +46,8 @@ public class AnswerRepository : IAnswerRepository
                              .Where(x => x.UserId == _userId)
                               select new AnswerResponse()
                               {
-                                  IsCorrectAnswer = Answer.IsCorrectAnswer,
                                   QuestionId = Answer.QuestionId,
-                                  SecondsAnswer = Answer.SecondsAnswer,
+                                  Punctuation = Answer.Punctuation
                               }).AsEnumerable();
 
         return answerResponse;

@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using PicEnfermagem.Application.DTOs.Response;
 using PicEnfermagem.Application.Interfaces.Repository;
 using PicEnfermagem.Domain.Entities;
 using PicEnfermagem.Infraestrutura.Context;
+using System.Security.Claims;
 
 namespace PicEnfermagem.Infraestrutura.Repositories;
 
@@ -10,12 +12,12 @@ public class QuestionRepository : IQuestionRepository
 {
     private readonly PicEnfermagemDb _context;
     private readonly DbSet<Question> _question;
-    private readonly IAnswerRepository _answerRepository;
-    public QuestionRepository(PicEnfermagemDb context, IAnswerRepository answerRepository)
+    protected readonly UserManager<ApplicationUser> _user;
+    public QuestionRepository(PicEnfermagemDb context, UserManager<ApplicationUser> user)
     {
         _context = context;
         _question = _context.Set<Question>();
-        _answerRepository = answerRepository;
+        _user = user;
     }
     public async Task<bool> InsertAsync(Question question)
     {
@@ -39,6 +41,9 @@ public class QuestionRepository : IQuestionRepository
                          {
                              Id = question.Id,
                              Statement = question.Statement,
+                             Difficulty = question.Difficulty,
+                             MaxPunctuation = question.MaxPunctuation,
+                             MinPunctuation = question.MinPunctuation,
                              Alternatives = (ICollection<AlternativeResponse>)question.Alternatives.Select(alternative => new AlternativeResponse()
                              {
                                  IsCorrect = alternative.IsCorrect,

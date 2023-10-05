@@ -4,8 +4,8 @@ namespace PicEnfermagem.Domain.Factories;
 
 public static class AnswerFactory
 {
-    public static Answer Create(int questionId, bool isCorrectAnswer, int secondsAnswer)
+    public static Answer Create(int questionId,int punctuation)
     {
-        return new Answer(questionId, isCorrectAnswer, secondsAnswer);  
+        return new Answer(questionId, punctuation);  
     }
 }

@@ -10,7 +10,7 @@ public class UserAdminRegisterRequest
     public string Name { get; set; }
     [Required(ErrorMessage = "O Email deve ser informado.")]
     [EmailAddress(ErrorMessage = "Informe um email válido")]
-    public string Email { get; set; }
+    public string Username { get; set; }
     [Required(ErrorMessage = "A senha deve ser informada.")]
     public string Password { get; set; }
     [Compare(nameof(Password), ErrorMessage = "As senhas devem ser iguais.")]

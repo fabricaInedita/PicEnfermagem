@@ -17,7 +17,7 @@ public class AnswerService : IAnswerService
 
     public async Task<bool> PostAnswer(AnswerInsertRequest dto, ClaimsPrincipal claimUser)
     {
-        var answer = AnswerFactory.Create(dto.QuestionId, dto.IsCorrectAnswer, dto.SecondsAnswer);
+        var answer = AnswerFactory.Create(dto.QuestionId, dto.Punctuation);
         return await _ashwerRepository.PostAnswer(answer, claimUser);
     }
 }

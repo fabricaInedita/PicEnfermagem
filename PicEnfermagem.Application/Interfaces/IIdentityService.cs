@@ -12,5 +12,7 @@ public interface IIdentityService
     Task<UserRegisterResponse> RegisterUser(UserInsertRequest userRegister);
     Task<DefaultResponse> DeleteUser(string email);
     Task<IEnumerable<UserResponse>> GetUser();
+    Task<int> GetPunctuationByUserLogged();
+    Task<IEnumerable<UserResponse>> GetRank();
     Task<bool> PostAnswer(AnswerInsertRequest dto, ClaimsPrincipal claimUser);
 }

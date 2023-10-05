@@ -6,6 +6,6 @@ namespace PicEnfermagem.Application.Interfaces;
 public interface IQuestionService
 {
     Task<bool> InsertAsync(QuestionInsertRequest question);
-    Task<IEnumerable<QuestionResponse>> GetAllAsync();
+    Task<QuestionResponseList> GetAllAsync();
     Task<IEnumerable<QuestionResponse>> GetByCategoryAsync(int categoryId);
 }

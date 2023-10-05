@@ -76,15 +76,10 @@ public class UserController : ControllerBase
         return BadRequest(result);
     }
 
-    [HttpPost]
-    [Route("user/postAnswer")]
-    public async Task<ActionResult> PostAnswer(AnswerInsertRequest question)
+    [HttpGet]
+    [Route("get_rank")]
+    public async Task<IActionResult> GetRankAsync()
     {
-        var result = await _identityService.PostAnswer(question, User);
-
-        if (result)
-            return Ok();
-
-        return BadRequest();
+        return Ok(await _identityService.GetRank());
     }
 }

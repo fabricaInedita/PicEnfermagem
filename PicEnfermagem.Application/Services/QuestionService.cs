@@ -12,11 +12,13 @@ public class QuestionService : IQuestionService
     private readonly IQuestionRepository _questionRep;
     private readonly ICategoryRepository _categoryRep;
     private readonly IAnswerRepository _answerRep;
-    public QuestionService(IQuestionRepository questionRep, ICategoryRepository categoryRep, IAnswerRepository answerRep)
+    private readonly IIdentityService _userService;
+    public QuestionService(IQuestionRepository questionRep, ICategoryRepository categoryRep, IAnswerRepository answerRep, IIdentityService userService)
     {
         _questionRep = questionRep;
         _categoryRep = categoryRep;
         _answerRep = answerRep;
+        _userService = userService;
     }
 
     public async Task<bool> InsertAsync(QuestionInsertRequest questionDto)
@@ -25,12 +27,17 @@ public class QuestionService : IQuestionService
 
         var category = await _categoryRep.FindByIdAsync(questionDto.CategoryId);
 
-        var question = QuestionFactory.Create(questionDto.statement, alternatives, category);
+        var question = QuestionFactory
+            .Create(questionDto.statement,
+            alternatives, category,
+            questionDto.MaxPunctuation,
+            questionDto.MinPunctuation,
+            questionDto.Difficulty);
 
         return await _questionRep.InsertAsync(question);
     }
 
-    public async Task<IEnumerable<QuestionResponse>> GetAllAsync()
+    public async Task<QuestionResponseList> GetAllAsync()
     {
         var questions = (await _questionRep.GetAllAsync()).ToList();
         var answers = await _answerRep.GetAll();
@@ -42,7 +49,13 @@ public class QuestionService : IQuestionService
             questions.Remove(questionResponse);
         }
 
-        return questions;
+        var questionResponseList = new QuestionResponseList()
+        {
+            Punctuation = await _userService.GetPunctuationByUserLogged(),
+            QuestionResponses = questions
+        };
+
+        return questionResponseList;
     }
     public async Task<IEnumerable<QuestionResponse>> GetByCategoryAsync(int categoryId)
     {

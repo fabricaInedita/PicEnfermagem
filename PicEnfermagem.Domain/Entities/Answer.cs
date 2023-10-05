@@ -5,15 +5,13 @@ namespace PicEnfermagem.Domain.Entities;
 public sealed class Answer : EntityCore
 {
     public int QuestionId { get; private set; }
-    public bool IsCorrectAnswer { get; private set; }
-    public int SecondsAnswer {  get; private set; }
+    public int Punctuation {  get; private set; }
     public ApplicationUser? User { get; private set; }
     public string? UserId { get; set; }
-    internal Answer(int questionId, bool isCorrectAnswer, int secondsAnswer)
+    internal Answer(int questionId, int punctuation)
     {
         QuestionId = questionId;
-        IsCorrectAnswer = isCorrectAnswer;
-        SecondsAnswer = secondsAnswer;
+        Punctuation = punctuation;
     }
     private Answer() { }
 }
