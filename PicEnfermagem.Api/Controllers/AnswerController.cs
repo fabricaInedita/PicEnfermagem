@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PicEnfermagem.Application.DTOs.Insert;
 using PicEnfermagem.Application.Interfaces;
 using PicEnfermagem.Identity.Services;
@@ -16,6 +17,7 @@ public class AnswerController : Controller
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult> PostAnswer(AnswerInsertRequest question)
     {
         var result = await _answerService.PostAnswer(question, User);
