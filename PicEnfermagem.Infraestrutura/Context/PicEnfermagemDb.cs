@@ -8,7 +8,7 @@ namespace PicEnfermagem.Infraestrutura.Context;
 
 public class PicEnfermagemDb : IdentityDbContext<ApplicationUser>
 {
-    internal readonly IHttpContextAccessor _contextAcessor;
+    public readonly IHttpContextAccessor _contextAcessor;
     public PicEnfermagemDb(DbContextOptions options, IHttpContextAccessor contextAcessor) : base(options)
     {
         _contextAcessor = contextAcessor;

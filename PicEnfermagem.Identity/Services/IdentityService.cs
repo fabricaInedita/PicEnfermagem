@@ -33,7 +33,7 @@ public class IdentityService : IIdentityService
         _serviceProvider = serviceProvider;
         _httpContextAccessor = httpContextAccessor;
         _context = context;
-        _userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        _userId = _context._contextAcessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
     }
 
@@ -186,12 +186,15 @@ public class IdentityService : IIdentityService
                       }).AsEnumerable();
 
         return result;
-                           
+
     }
 
     public async Task<int> GetPunctuationByUserLogged()
     {
-        var punctuation = (await _userManager.FindByIdAsync(_userId)).Punctuation;
+        int punctuation = 0;
+
+        if (_userId is not null)
+             punctuation = (await _userManager.FindByIdAsync(_userId)).Punctuation;
 
         return punctuation;
     }
@@ -206,7 +209,7 @@ public class IdentityService : IIdentityService
                       }).OrderByDescending(x => x.Pontos).Take(10);
 
         return result;
-                           
+
     }
 
     public async Task<DefaultResponse> DeleteUser(string email)
@@ -223,7 +226,7 @@ public class IdentityService : IIdentityService
     {
         var user = await _userManager.GetUserAsync(claimUser);
         var answer = AnswerFactory.Create(dto.QuestionId, dto.Punctuation);
-      
+
         user.Answers.Add(answer);
 
         var response = await _context.SaveChangesAsync();
