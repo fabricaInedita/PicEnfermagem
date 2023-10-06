@@ -57,6 +57,7 @@ public static class AuthenticationSetup
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
         }).AddJwtBearer(options =>
         {
 
@@ -77,6 +78,10 @@ public static class AuthenticationSetup
                         claim.Type == "permissions" &&
                         (claim.Value == "CriarPergunta" || claim.Value == "DeletarPergunta" || claim.Value == "EditarPergunta" || claim.Value == "VisualizarPergunta"));
                 });
+            });
+            options.AddPolicy("UserRole", policy =>
+            {
+                policy.RequireRole("User");
             });
         });
 

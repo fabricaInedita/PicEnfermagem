@@ -28,6 +28,7 @@ public class QuestionsController : ControllerBase
 
 
     [HttpGet]
+    [Authorize(Policy = "UserRole")]
     public async Task<ActionResult> GetAllAsync()
     {
         var response = await questionService.GetAllAsync();

@@ -17,7 +17,7 @@ public class AnswerController : Controller
     }
 
     [HttpPost]
-    [Authorize]
+    [Authorize(Policy = "UserRole")]
     public async Task<ActionResult> PostAnswer(AnswerInsertRequest question)
     {
         var result = await _answerService.PostAnswer(question, User);
