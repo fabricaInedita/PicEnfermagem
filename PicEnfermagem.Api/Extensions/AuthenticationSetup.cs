@@ -10,11 +10,6 @@ public static class AuthenticationSetup
 {
     public static void AddAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-
-        services.AddSession(options =>
-        {
-        });
-
         var jwtAppSettingOptions = configuration.GetSection(nameof(JwtOptions));
         var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration.GetSection("JwtOptions:SecurityKey").Value));
 
@@ -57,10 +52,8 @@ public static class AuthenticationSetup
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
         }).AddJwtBearer(options =>
         {
-
             options.TokenValidationParameters = tokenValidationParameters;
         });
     }
@@ -69,22 +62,10 @@ public static class AuthenticationSetup
     {
         services.AddAuthorization(options =>
         {
-            options.AddPolicy("AdminRole", policy =>
+            options.AddPolicy("LoggedInPolicy", policy =>
             {
-                policy.RequireRole("Admin");
-                policy.RequireAssertion(context =>
-                {
-                    return context.User.HasClaim(claim =>
-                        claim.Type == "permissions" &&
-                        (claim.Value == "CriarPergunta" || claim.Value == "DeletarPergunta" || claim.Value == "EditarPergunta" || claim.Value == "VisualizarPergunta"));
-                });
-            });
-            options.AddPolicy("UserRole", policy =>
-            {
-                policy.RequireRole("User");
+                policy.RequireAuthenticatedUser();
             });
         });
-
-
     }
 }

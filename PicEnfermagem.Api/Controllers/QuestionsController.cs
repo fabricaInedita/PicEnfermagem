@@ -14,7 +14,7 @@ public class QuestionsController : ControllerBase
         this.questionService = questionService;
     }
 
-    [Authorize(Policy = "AdminRole")]
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult> PostAsync(QuestionInsertRequest model)
     {
@@ -28,7 +28,7 @@ public class QuestionsController : ControllerBase
 
 
     [HttpGet]
-    [Authorize(Policy = "UserRole")]
+    [Authorize]
     public async Task<ActionResult> GetAllAsync()
     {
         var response = await questionService.GetAllAsync();

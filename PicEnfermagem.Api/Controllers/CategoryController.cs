@@ -26,7 +26,7 @@ public class CategoryController : ControllerBase
         return BadRequest(response);
     }
 
-    [Authorize(Policy = "AdminRole")]
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult> InsertAsync(CategoryInsertRequest category)
     {

@@ -15,15 +15,16 @@ public static class NativeInjectorConfig
 {
     public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
     {
+        //Context
+        services.AddDbContext<PicEnfermagemDb>
+            (opts => opts
+            .UseNpgsql(configuration
+            .GetConnectionString("connection")));
+
         services.AddControllers();
 
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
-
-        services.AddAuthentication(configuration);
-        services.AddAuthorizationPolicies();
-        services.AddDistributedMemoryCache();
-
 
         //Services
         services.AddScoped<IQuestionService, QuestionService>();
@@ -36,21 +37,6 @@ public static class NativeInjectorConfig
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IAnswerRepository, AnswerRepository>();
 
-        //Context
-        services.AddIdentity<ApplicationUser, IdentityRole>()
-          .AddRoles<IdentityRole>()
-          .AddDefaultTokenProviders()
-          .AddEntityFrameworkStores<PicEnfermagemDb>()
-          .AddUserManager<UserManager<ApplicationUser>>()
-          .AddSignInManager<SignInManager<ApplicationUser>>()
-          .AddDefaultTokenProviders();
-
-        services.AddDbContext<PicEnfermagemDb>
-            (opts => opts
-            .UseNpgsql(configuration
-            .GetConnectionString("connection")));
-
-
         //Cors
         services.AddCors(options =>
         {
@@ -59,7 +45,17 @@ public static class NativeInjectorConfig
               .AllowAnyOrigin()
               .AllowAnyMethod()
               .AllowAnyHeader());
-        });                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+        });
+        services.AddIdentity<ApplicationUser, IdentityRole>()
+        .AddRoles<IdentityRole>()
+        .AddDefaultTokenProviders()
+        .AddEntityFrameworkStores<PicEnfermagemDb>()
+        .AddUserManager<UserManager<ApplicationUser>>()
+        .AddSignInManager<SignInManager<ApplicationUser>>()
+        .AddDefaultTokenProviders();
+
+        services.AddAuthentication(configuration);
+        services.AddAuthorizationPolicies();
 
     }
 }
