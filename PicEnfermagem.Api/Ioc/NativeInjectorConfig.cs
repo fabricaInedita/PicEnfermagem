@@ -2,12 +2,12 @@
 using PicEnfermagem.Application.Interfaces;
 using PicEnfermagem.Application.Services;
 using PicEnfermagem.Infraestrutura.Repositories;
-using Microsoft.AspNetCore.Identity;
 using PicEnfermagem.Infraestrutura.Context;
 using PicEnfermagem.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using PicEnfermagem.Identity.Services;
 using PicEnfermagem.Api.Extensions;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace PicEnfermagem.Api.Ioc;
 
@@ -46,16 +46,13 @@ public static class NativeInjectorConfig
               .AllowAnyMethod()
               .AllowAnyHeader());
         });
-        services.AddIdentity<ApplicationUser, IdentityRole>()
-        .AddRoles<IdentityRole>()
-        .AddDefaultTokenProviders()
-        .AddEntityFrameworkStores<PicEnfermagemDb>()
-        .AddUserManager<UserManager<ApplicationUser>>()
-        .AddSignInManager<SignInManager<ApplicationUser>>()
-        .AddDefaultTokenProviders();
+
+        services.AddDefaultIdentity<ApplicationUser>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<PicEnfermagemDb>()
+                .AddDefaultTokenProviders();
 
         services.AddAuthentication(configuration);
-        services.AddAuthorizationPolicies();
 
     }
 }

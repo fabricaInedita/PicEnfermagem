@@ -24,10 +24,10 @@ public static class AuthenticationSetup
 
         services.Configure<IdentityOptions>(options =>
         {
-            options.Password.RequireDigit = false;
-            options.Password.RequireLowercase = false;
-            options.Password.RequireNonAlphanumeric = false;
-            options.Password.RequireUppercase = false;
+            options.Password.RequireDigit = true;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireNonAlphanumeric = true;
+            options.Password.RequireUppercase = true;
             options.Password.RequiredLength = 6;
         });
 
@@ -45,7 +45,7 @@ public static class AuthenticationSetup
             RequireExpirationTime = true,
             ValidateLifetime = true,
 
-
+            ClockSkew = TimeSpan.Zero
         };
 
         services.AddAuthentication(options =>
@@ -55,17 +55,6 @@ public static class AuthenticationSetup
         }).AddJwtBearer(options =>
         {
             options.TokenValidationParameters = tokenValidationParameters;
-        });
-    }
-
-    public static void AddAuthorizationPolicies(this IServiceCollection services)
-    {
-        services.AddAuthorization(options =>
-        {
-            options.AddPolicy("LoggedInPolicy", policy =>
-            {
-                policy.RequireAuthenticatedUser();
-            });
         });
     }
 }
