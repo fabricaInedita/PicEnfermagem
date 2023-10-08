@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PicEnfermagem.Application.DTOs.Response;
+using PicEnfermagem.Application.DTOs.Category;
 using PicEnfermagem.Application.Interfaces.Repository;
 using PicEnfermagem.Domain.Entities;
 using PicEnfermagem.Infraestrutura.Context;

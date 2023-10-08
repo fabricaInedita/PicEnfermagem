@@ -1,5 +1,5 @@
 ﻿using PicEnfermagem.Application.DTOs.Insert;
-using PicEnfermagem.Application.DTOs.Response;
+using PicEnfermagem.Application.DTOs.Question;
 
 namespace PicEnfermagem.Application.Interfaces;
 

@@ -36,6 +36,7 @@ public static class NativeInjectorConfig
         services.AddScoped<IQuestionRepository, QuestionRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IAnswerRepository, AnswerRepository>();
+        services.AddScoped<IAlternativeRepository, AlternativeRepository>();
 
         //Cors
         services.AddCors(options =>

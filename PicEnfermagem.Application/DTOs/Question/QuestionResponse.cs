@@ -1,4 +1,7 @@
-﻿namespace PicEnfermagem.Application.DTOs.Response;
+﻿using PicEnfermagem.Application.DTOs.Alternative;
+using PicEnfermagem.Application.DTOs.Category;
+
+namespace PicEnfermagem.Application.DTOs.Question;
 
 public sealed class QuestionResponse
 {
@@ -12,6 +15,6 @@ public sealed class QuestionResponse
 }
 public sealed class QuestionResponseList
 {
-    public int Punctuation { get; set; }
+    public double Punctuation { get; set; }
     public IEnumerable<QuestionResponse> QuestionResponses { get; set; }
 }

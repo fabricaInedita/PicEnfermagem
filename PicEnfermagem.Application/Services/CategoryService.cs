@@ -1,5 +1,5 @@
-﻿using PicEnfermagem.Application.DTOs.Insert;
-using PicEnfermagem.Application.DTOs.Response;
+﻿using PicEnfermagem.Application.DTOs.Category;
+using PicEnfermagem.Application.DTOs.User;
 using PicEnfermagem.Application.Interfaces;
 using PicEnfermagem.Application.Interfaces.Repository;
 using PicEnfermagem.Domain.Factories;

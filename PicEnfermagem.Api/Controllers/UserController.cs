@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PicEnfermagem.Application.DTOs.Insert;
+using PicEnfermagem.Application.DTOs.User;
 using PicEnfermagem.Application.Interfaces;
 
 namespace PaintBall_Project.Api.Controllers;

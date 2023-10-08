@@ -1,4 +1,4 @@
-﻿namespace PicEnfermagem.Application.DTOs;
+﻿namespace PicEnfermagem.Application.DTOs.User;
 
 public sealed class PlayerInsertRequest
 {

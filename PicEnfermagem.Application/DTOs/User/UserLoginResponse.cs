@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace PicEnfermagem.Application.DTOs.Response;
+namespace PicEnfermagem.Application.DTOs.User;
 
 public class UserLoginResponse
 {
@@ -22,7 +22,7 @@ public class UserLoginResponse
 
 
     public UserLoginResponse(bool success)
-    {}
+    { }
 
     public UserLoginResponse(bool success, string accessToken, string refreshToken, string expirationTimeRefreshtoken, string expirationTimeAccessToken)
     {

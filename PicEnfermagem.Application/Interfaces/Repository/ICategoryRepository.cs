@@ -1,4 +1,4 @@
-﻿using PicEnfermagem.Application.DTOs.Response;
+﻿using PicEnfermagem.Application.DTOs.Category;
 using PicEnfermagem.Domain.Entities;
 
 namespace PicEnfermagem.Application.Interfaces.Repository;

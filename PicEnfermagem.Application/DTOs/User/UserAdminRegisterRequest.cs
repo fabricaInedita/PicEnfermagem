@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PicEnfermagem.Application.DTOs.Insert;
+namespace PicEnfermagem.Application.DTOs.User;
 
 public class UserAdminRegisterRequest
 {

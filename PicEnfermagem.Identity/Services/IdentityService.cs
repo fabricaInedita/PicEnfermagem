@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using PicEnfermagem.Application.DTOs.Insert;
-using PicEnfermagem.Application.DTOs.Response;
+using PicEnfermagem.Application.DTOs.Answer;
+using PicEnfermagem.Application.DTOs.User;
 using PicEnfermagem.Application.Interfaces;
 using PicEnfermagem.Domain.Entities;
 using PicEnfermagem.Domain.Factories;
@@ -182,16 +182,16 @@ public class IdentityService : IIdentityService
                       {
                           Email = users.Email,
                           Name = users.Name,
-                          Pontos = users.Punctuation
+                          Punctuation = users.Punctuation
                       }).AsEnumerable();
 
         return result;
 
     }
 
-    public async Task<int> GetPunctuationByUserLogged()
+    public async Task<double> GetPunctuationByUserLogged()
     {
-        int punctuation = 0;
+        double punctuation = 0;
 
         if (_userId is not null)
              punctuation = (await _userManager.FindByIdAsync(_userId)).Punctuation;
@@ -205,8 +205,8 @@ public class IdentityService : IIdentityService
                       {
                           Email = users.Email,
                           Name = users.Name,
-                          Pontos = users.Punctuation
-                      }).OrderByDescending(x => x.Pontos).Take(10);
+                          Punctuation = users.Punctuation
+                      }).OrderByDescending(x => x.Punctuation).Take(10);
 
         return result;
 

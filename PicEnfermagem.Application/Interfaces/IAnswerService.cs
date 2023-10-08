@@ -1,10 +1,10 @@
-﻿using PicEnfermagem.Application.DTOs.Insert;
+﻿using PicEnfermagem.Application.DTOs.Answer;
 using System.Security.Claims;
 
 namespace PicEnfermagem.Application.Interfaces;
 
 public interface IAnswerService
 {
-    Task<bool> PostAnswer(AnswerInsertRequest dto, ClaimsPrincipal claimUser);
+    Task<AnswerResponse> PostAnswer(AnswerInsertRequest dto, ClaimsPrincipal claimUser);
     
 }

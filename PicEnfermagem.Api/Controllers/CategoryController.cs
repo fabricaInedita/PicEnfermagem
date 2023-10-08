@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PicEnfermagem.Application.DTOs.Insert;
+using PicEnfermagem.Application.DTOs.Category;
 using PicEnfermagem.Application.Interfaces;
 
 namespace PicEnfermagem.Api.Controllers;

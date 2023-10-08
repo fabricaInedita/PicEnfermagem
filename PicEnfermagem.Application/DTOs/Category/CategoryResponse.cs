@@ -1,4 +1,4 @@
-﻿namespace PicEnfermagem.Application.DTOs.Response;
+﻿namespace PicEnfermagem.Application.DTOs.Category;
 
 public sealed class CategoryResponse
 {

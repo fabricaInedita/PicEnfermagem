@@ -1,6 +1,6 @@
 ﻿
-using PicEnfermagem.Application.DTOs.Insert;
-using PicEnfermagem.Application.DTOs.Response;
+using PicEnfermagem.Application.DTOs.Answer;
+using PicEnfermagem.Application.DTOs.User;
 using System.Security.Claims;
 
 namespace PicEnfermagem.Application.Interfaces;
@@ -12,7 +12,7 @@ public interface IIdentityService
     Task<UserRegisterResponse> RegisterUser(UserInsertRequest userRegister);
     Task<DefaultResponse> DeleteUser(string email);
     Task<IEnumerable<UserResponse>> GetUser();
-    Task<int> GetPunctuationByUserLogged();
+    Task<double> GetPunctuationByUserLogged();
     Task<IEnumerable<UserResponse>> GetRank();
     Task<bool> PostAnswer(AnswerInsertRequest dto, ClaimsPrincipal claimUser);
 }

@@ -1,4 +1,4 @@
-﻿using PicEnfermagem.Application.DTOs.Insert;
+﻿using PicEnfermagem.Application.DTOs.Answer;
 using PicEnfermagem.Application.Interfaces;
 using PicEnfermagem.Application.Interfaces.Repository;
 using PicEnfermagem.Domain.Factories;
@@ -8,16 +8,31 @@ namespace PicEnfermagem.Application.Services;
 
 public class AnswerService : IAnswerService
 {
-    private readonly IAnswerRepository _ashwerRepository;
+    private readonly IAnswerRepository _answerRepository;
+    private readonly IAlternativeRepository _alternativeRepository;
 
-    public AnswerService(IAnswerRepository ashwerRepository)
+    public AnswerService(IAnswerRepository ashwerRepository, IAlternativeRepository alternativeRepository)
     {
-        _ashwerRepository = ashwerRepository;
+        _answerRepository = ashwerRepository;
+        _alternativeRepository = alternativeRepository;
     }
 
-    public async Task<bool> PostAnswer(AnswerInsertRequest dto, ClaimsPrincipal claimUser)
+    public async Task<AnswerResponse> PostAnswer(AnswerInsertRequest dto, ClaimsPrincipal claimUser)
     {
         var answer = AnswerFactory.Create(dto.QuestionId, dto.Punctuation);
-        return await _ashwerRepository.PostAnswer(answer, claimUser);
+        var result = await _answerRepository.PostAnswer(answer, claimUser);
+
+        var question = await _alternativeRepository.GetByIdAsync(dto.QuestionId);
+
+        var alternativeCorrect = question.Where(x => x.IsCorrect == true).FirstOrDefault();
+
+        var response = new AnswerResponse()
+        {
+            AlternativeCorrectId = alternativeCorrect.Id,
+            Punctuation = result
+        };
+
+        return response;
+
     }
 }

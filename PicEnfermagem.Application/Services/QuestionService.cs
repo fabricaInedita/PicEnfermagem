@@ -1,5 +1,6 @@
-﻿using PicEnfermagem.Application.DTOs.Insert;
-using PicEnfermagem.Application.DTOs.Response;
+﻿using PicEnfermagem.Application.DTOs.Alternative;
+using PicEnfermagem.Application.DTOs.Insert;
+using PicEnfermagem.Application.DTOs.Question;
 using PicEnfermagem.Application.Interfaces;
 using PicEnfermagem.Application.Interfaces.Repository;
 using PicEnfermagem.Domain.Entities;
@@ -59,7 +60,7 @@ public class QuestionService : IQuestionService
     }
     public async Task<IEnumerable<QuestionResponse>> GetByCategoryAsync(int categoryId)
     {
-        return await _questionRep.GetByCategoryId(categoryId);
+        return await _questionRep.GetByCategoryIdAsync(categoryId);
     }
     private async Task<List<Alternative>> PrepareAlternativesAsync(ICollection<AlternativeInsertRequest> alternativesDto)
     {

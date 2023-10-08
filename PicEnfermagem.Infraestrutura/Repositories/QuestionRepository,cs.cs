@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using PicEnfermagem.Application.DTOs.Response;
+using PicEnfermagem.Application.DTOs.Alternative;
+using PicEnfermagem.Application.DTOs.Category;
+using PicEnfermagem.Application.DTOs.Question;
 using PicEnfermagem.Application.Interfaces.Repository;
 using PicEnfermagem.Domain.Entities;
 using PicEnfermagem.Infraestrutura.Context;
-using System.Security.Claims;
 
 namespace PicEnfermagem.Infraestrutura.Repositories;
 
@@ -46,8 +47,9 @@ public class QuestionRepository : IQuestionRepository
                              MinPunctuation = question.MinPunctuation,
                              Alternatives = (ICollection<AlternativeResponse>)question.Alternatives.Select(alternative => new AlternativeResponse()
                              {
-                                 IsCorrect = alternative.IsCorrect,
-                                 Option = alternative.Option
+                                 Id = alternative.Id,
+                                 Option = alternative.Option,
+                                 Description = alternative.Description,
                              }),
                              Category = new CategoryResponse()
                              {
@@ -59,8 +61,7 @@ public class QuestionRepository : IQuestionRepository
         return questions;
     }
 
-
-    public async Task<IEnumerable<QuestionResponse>> GetByCategoryId(int categoryId)
+    public async Task<IEnumerable<QuestionResponse>> GetByCategoryIdAsync(int categoryId)
     {
         var questions = (from question in _question
                         .AsNoTracking()
@@ -69,7 +70,6 @@ public class QuestionRepository : IQuestionRepository
                          {
                              Alternatives = (ICollection<AlternativeResponse>)question.Alternatives.Select(alternative => new AlternativeResponse()
                              {
-                                 IsCorrect = alternative.IsCorrect,
                                  Option = alternative.Option
                              }),
                              Category = new CategoryResponse()
@@ -83,4 +83,28 @@ public class QuestionRepository : IQuestionRepository
         return questions;
     }
 
+    public async Task<QuestionResponse> GetByIdAsync(int questionId)
+    {
+        var questions = (from question in _question
+               .AsNoTracking()
+               .Include(x => x.Alternatives)
+               .Where(x => x.Id == questionId)
+                         select new QuestionResponse()
+                         {
+                             Alternatives = (ICollection<AlternativeResponse>)question.Alternatives.Select(x => new AlternativeResponse
+                             {
+                                 Id = x.Id,
+                                 Description = x.Description,
+                                 Option = x.Option,
+                                 IsCorrect = x.IsCorrect,
+
+                             }),
+                             Difficulty = question.Difficulty,
+                             MaxPunctuation = question.MaxPunctuation,
+                             MinPunctuation = question.MinPunctuation,
+                             Id = question.Id
+                         }).ToList().FirstOrDefault();
+
+        return questions;
+    }
 }

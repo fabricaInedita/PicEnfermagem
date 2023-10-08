@@ -1,4 +1,4 @@
-﻿namespace PicEnfermagem.Application.DTOs.Insert;
+﻿namespace PicEnfermagem.Application.DTOs.Category;
 
 public sealed class CategoryInsertRequest
 {

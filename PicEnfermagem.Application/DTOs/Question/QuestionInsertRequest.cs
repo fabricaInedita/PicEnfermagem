@@ -1,4 +1,6 @@
-﻿namespace PicEnfermagem.Application.DTOs.Insert;
+﻿using PicEnfermagem.Application.DTOs.Alternative;
+
+namespace PicEnfermagem.Application.DTOs.Insert;
 
 public class QuestionInsertRequest
 {

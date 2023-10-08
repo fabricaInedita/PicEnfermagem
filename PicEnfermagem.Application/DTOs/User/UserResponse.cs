@@ -1,8 +1,8 @@
-﻿namespace PicEnfermagem.Application.DTOs.Response;
+﻿namespace PicEnfermagem.Application.DTOs.User;
 
 public sealed class UserResponse
 {
     public string Email { get; set; }
-    public int Pontos { get; set; }
+    public double Punctuation { get; set; }
     public string Name { get; set; }
 }

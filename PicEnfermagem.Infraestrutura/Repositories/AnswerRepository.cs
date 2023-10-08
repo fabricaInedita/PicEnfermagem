@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using PicEnfermagem.Application.DTOs.Response;
+using PicEnfermagem.Application.DTOs.Answer;
 using PicEnfermagem.Application.Interfaces.Repository;
 using PicEnfermagem.Domain.Entities;
 using PicEnfermagem.Infraestrutura.Context;
@@ -12,31 +12,33 @@ public class AnswerRepository : IAnswerRepository
 {
     private readonly PicEnfermagemDb _context;
     private readonly DbSet<Answer> _answer;
+    private readonly IQuestionRepository _questionRepository;
     private readonly UserManager<ApplicationUser> _user;
     private string _userId;
 
-    public AnswerRepository(PicEnfermagemDb context, UserManager<ApplicationUser> user)
+    public AnswerRepository(PicEnfermagemDb context, UserManager<ApplicationUser> user, IQuestionRepository questionRepository)
     {
         _context = context;
         _answer = _context.Set<Answer>();
         _user = user;
         _userId = _context._contextAcessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
+        _questionRepository = questionRepository;
     }
 
-    public async Task<bool> PostAnswer(Answer entity, ClaimsPrincipal claimUser)
+    public async Task<double> PostAnswer(Answer entity, ClaimsPrincipal claimUser)
     {
         var user = await _user.GetUserAsync(claimUser);
         entity.UserId = user.Id;
-        user.Punctuation += entity.Punctuation;
+        var ponctuationActual = user.Punctuation += entity.Punctuation;
 
         _answer.Add(entity);
+
         var response = await _context.SaveChangesAsync();
 
         if (response < 1)
-            return false;
+            return 0;
 
-        return true;
+        return ponctuationActual;
     }
 
     public async Task<IEnumerable<AnswerResponse>> GetAll()
