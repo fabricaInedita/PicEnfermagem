@@ -20,9 +20,11 @@ public class AnswerService : IAnswerService
     public async Task<AnswerResponse> PostAnswer(AnswerInsertRequest dto, ClaimsPrincipal claimUser)
     {
         var answer = AnswerFactory.Create(dto.QuestionId, dto.Punctuation);
-        var result = await _answerRepository.PostAnswer(answer, claimUser);
 
-        var question = await _alternativeRepository.GetByIdAsync(dto.QuestionId);
+        var question = (await _alternativeRepository.GetByIdAsync(dto.QuestionId));
+
+        var alternativeAnswer = question.Where(x => x.Id == dto.AlternativeId).SingleOrDefault();
+        var result = await _answerRepository.PostAnswer(answer, claimUser, alternativeAnswer);
 
         var alternativeCorrect = question.Where(x => x.IsCorrect == true).FirstOrDefault();
 

@@ -8,6 +8,6 @@ public record AlternativeResponse
     public string Option { get; set; }
     public string Description { get; set; }
 
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public bool IsCorrect { get; set; }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using PicEnfermagem.Application.DTOs.Alternative;
 using PicEnfermagem.Application.DTOs.Answer;
 using PicEnfermagem.Application.Interfaces.Repository;
 using PicEnfermagem.Domain.Entities;
@@ -25,9 +26,12 @@ public class AnswerRepository : IAnswerRepository
         _questionRepository = questionRepository;
     }
 
-    public async Task<double> PostAnswer(Answer entity, ClaimsPrincipal claimUser)
+    public async Task<double> PostAnswer(Answer entity, ClaimsPrincipal claimUser, AlternativeResponse alternativeResponse)
     {
         var user = await _user.GetUserAsync(claimUser);
+        if (!alternativeResponse.IsCorrect)
+            return user.Punctuation;
+
         entity.UserId = user.Id;
         var ponctuationActual = user.Punctuation += entity.Punctuation;
 
