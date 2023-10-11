@@ -29,11 +29,11 @@ public class AnswerRepository : IAnswerRepository
     public async Task<double> PostAnswer(Answer entity, ClaimsPrincipal claimUser, AlternativeResponse alternativeResponse)
     {
         var user = await _user.GetUserAsync(claimUser);
-        if (!alternativeResponse.IsCorrect)
-            return user.Punctuation;
+        double punctuation = user.Punctuation;
+        if (alternativeResponse.IsCorrect)
+            punctuation = await CalculatePunctuationUser(user, entity);
 
         entity.UserId = user.Id;
-        var ponctuationActual = user.Punctuation += entity.Punctuation;
 
         _answer.Add(entity);
 
@@ -42,7 +42,7 @@ public class AnswerRepository : IAnswerRepository
         if (response < 1)
             return 0;
 
-        return ponctuationActual;
+        return punctuation;
     }
 
     public async Task<IEnumerable<AnswerResponse>> GetAll()
@@ -59,4 +59,10 @@ public class AnswerRepository : IAnswerRepository
         return answerResponse;
     }
 
+    private async Task<double> CalculatePunctuationUser(ApplicationUser user, Answer answer)
+    {
+        var ponctuationActual = user.Punctuation += answer.Punctuation;
+
+        return ponctuationActual;
+    }
 }
