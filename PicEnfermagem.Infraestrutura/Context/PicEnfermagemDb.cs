@@ -18,6 +18,7 @@ public class PicEnfermagemDb : IdentityDbContext<ApplicationUser>
     public DbSet<Alternative> alternative { get; set; }
     public DbSet<Answer> answer { get; set; }
     public DbSet<Category> category { get; set; }
+    public DbSet<StudentsData> studentdata { get; set; }
     public DbSet<ApplicationUser> user { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -27,3 +28,4 @@ public class PicEnfermagemDb : IdentityDbContext<ApplicationUser>
         modelBuilder.ApplyConfiguration(new QuestionMapping());
     }
 }
+

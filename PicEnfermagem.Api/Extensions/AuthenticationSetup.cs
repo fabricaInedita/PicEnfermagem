@@ -29,6 +29,8 @@ public static class AuthenticationSetup
             options.Password.RequireNonAlphanumeric = true;
             options.Password.RequireUppercase = true;
             options.Password.RequiredLength = 6;
+            options.SignIn.RequireConfirmedEmail = true;
+            options.Tokens.EmailConfirmationTokenProvider = "default";
         });
 
         var tokenValidationParameters = new TokenValidationParameters

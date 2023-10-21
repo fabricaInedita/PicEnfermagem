@@ -7,10 +7,5 @@ public sealed class UserRegisterResponse
     public Errors Errors { get; set; } = new Errors();
     public string SucessMessage { get; set; }
 
-
-    public UserRegisterResponse(bool success)
-    {
-    }
-
 }
 

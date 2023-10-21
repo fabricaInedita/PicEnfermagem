@@ -1,7 +1,20 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using iTextSharp.text.pdf;
+using iTextSharp.text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PicEnfermagem.Application.DTOs.Category;
 using PicEnfermagem.Application.Interfaces;
+using PicEnfermagem.Domain.Entities;
+using PicEnfermagem.Infraestrutura.Context;
+using RestSharp;
+using System.Reflection.Metadata;
+using System;
+using System.IO;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using Document = iTextSharp.text.Document;
 
 namespace PicEnfermagem.Api.Controllers;
 
@@ -10,9 +23,15 @@ namespace PicEnfermagem.Api.Controllers;
 public class CategoryController : ControllerBase
 {
     private readonly ICategoryService _categoryService;
-    public CategoryController(ICategoryService categoryService)
+    private readonly PicEnfermagemDb _context;
+    private readonly DbSet<StudentsData> _studenteData;
+
+    public CategoryController(PicEnfermagemDb context, ICategoryService categoryService)
     {
+        _context = context;
+        _studenteData = _context.Set<StudentsData>();
         _categoryService = categoryService;
+
     }
 
     [HttpGet]
@@ -38,3 +57,4 @@ public class CategoryController : ControllerBase
         return BadRequest();
     }
 }
+

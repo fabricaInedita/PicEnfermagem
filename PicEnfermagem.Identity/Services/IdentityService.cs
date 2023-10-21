@@ -1,40 +1,38 @@
 ﻿namespace PicEnfermagem.Identity.Services;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using PicEnfermagem.Application.DTOs.Answer;
 using PicEnfermagem.Application.DTOs.User;
 using PicEnfermagem.Application.Interfaces;
 using PicEnfermagem.Domain.Entities;
 using PicEnfermagem.Domain.Factories;
+using PicEnfermagem.Identity.Configuration;
 using PicEnfermagem.Identity.Utils;
 using PicEnfermagem.Infraestrutura.Context;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-
 public class IdentityService : IIdentityService
 {
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IServiceProvider _serviceProvider;
     private readonly JwtOptions _jwtOptions;
     private readonly PicEnfermagemDb _context;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly DbSet<StudentsData> _studentsDatas;
+    private readonly IEmailSenderService _emailSenderService;
     private string _userId;
 
-    public IdentityService(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IOptions<JwtOptions> jwtOptions, IServiceProvider serviceProvider, IHttpContextAccessor httpContextAccessor, PicEnfermagemDb context)
+    public IdentityService(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IOptions<JwtOptions> jwtOptions, PicEnfermagemDb context, IEmailSenderService emailSenderService)
     {
         _signInManager = signInManager;
         _userManager = userManager;
         _jwtOptions = jwtOptions.Value;
-        _serviceProvider = serviceProvider;
-        _httpContextAccessor = httpContextAccessor;
         _context = context;
         _userId = _context._contextAcessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
+        _studentsDatas = _context.Set<StudentsData>();
+        _emailSenderService = emailSenderService;
     }
 
     public async Task<UserLoginResponse> LoginAsync(LoginRequest userLogin)
@@ -69,79 +67,28 @@ public class IdentityService : IIdentityService
 
         return userLoginResponse;
     }
-    public async Task<UserRegisterResponse> RegisterUserAdmin(UserAdminRegisterRequest userRegister)
-    {
-        var user = new ApplicationUser()
-        {
-            Email = userRegister.Username,
-            Name = userRegister.Name,
-            UserName = userRegister.Username,
-        };
-
-        IdentityResult result = await _userManager.CreateAsync(user, userRegister.Password);
-
-        UserRegisterResponse userRegisterResponse = new UserRegisterResponse(result.Succeeded);
-
-        if (!result.Succeeded)
-        {
-            foreach (var erroAtual in result.Errors)
-            {
-                switch (erroAtual.Code)
-                {
-                    case "PasswordRequiresNonAlphanumeric":
-                        userRegisterResponse.Errors.AddError("A senha precisa conter pelo menos um caracter especial - ex( * | ! ).");
-                        break;
-
-                    case "PasswordRequiresDigit":
-                        userRegisterResponse.Errors.AddError("A senha precisa conter pelo menos um número (0 - 9).");
-                        break;
-
-                    case "PasswordRequiresUpper":
-                        userRegisterResponse.Errors.AddError("A senha precisa conter pelo menos um caracter em maiúsculo.");
-                        break;
-
-                    case "DuplicateUserName":
-                        userRegisterResponse.Errors.AddError("O email informado já foi cadastrado!");
-                        break;
-
-                    default:
-                        userRegisterResponse.Errors.AddError("Erro ao criar usuário.");
-                        break;
-                }
-
-            }
-        }
-        else
-        {
-            var roleManager = _serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-            var adminRoleExists = await roleManager.RoleExistsAsync("Admin");
-            if (!adminRoleExists)
-            {
-                await roleManager.CreateAsync(new IdentityRole("Admin"));
-            }
-
-            await _userManager.AddToRoleAsync(user, "Admin");
-            await _userManager.AddClaimAsync(user, new Claim("permissions", "CriarPergunta"));
-            await _userManager.AddClaimAsync(user, new Claim("permissions", "DeletarPergunta"));
-            await _userManager.AddClaimAsync(user, new Claim("permissions", "EditarPergunta"));
-            await _userManager.AddClaimAsync(user, new Claim("permissions", "VisualizarPergunta"));
-        }
-
-
-        return userRegisterResponse;
-    }
     public async Task<UserRegisterResponse> RegisterUser(UserInsertRequest userRegister)
     {
+        UserRegisterResponse userRegisterResponse = new UserRegisterResponse();
+
+        var response = await ValidateStudentCode(userRegister.Username);
+
+        if (response is null)
+        {
+            userRegisterResponse.Errors.AddError("O código do aluno informado não existe ou esta incorreto");
+            return userRegisterResponse;
+        }
+
         var user = new ApplicationUser()
         {
             UserName = userRegister.Username,
-            Name = userRegister.Username
+            Name = response,
+            Course = "ENFERMAGEM",
+            StudentCode = userRegister.Username
+
         };
 
         IdentityResult result = await _userManager.CreateAsync(user, userRegister.Password);
-
-        UserRegisterResponse userRegisterResponse = new UserRegisterResponse(result.Succeeded);
 
         if (!result.Succeeded)
         {
@@ -162,7 +109,7 @@ public class IdentityService : IIdentityService
                         break;
 
                     case "DuplicateUserName":
-                        userRegisterResponse.Errors.AddError("O email informado já foi cadastrado!");
+                        userRegisterResponse.Errors.AddError("O código do aluno informado já foi cadastrado!");
                         break;
 
                     default:
@@ -188,13 +135,12 @@ public class IdentityService : IIdentityService
         return result;
 
     }
-
     public async Task<double> GetPunctuationByUserLogged()
     {
         double punctuation = 0;
 
         if (_userId is not null)
-             punctuation = (await _userManager.FindByIdAsync(_userId)).Punctuation;
+            punctuation = (await _userManager.FindByIdAsync(_userId)).Punctuation;
 
         return punctuation;
     }
@@ -205,13 +151,13 @@ public class IdentityService : IIdentityService
                       {
                           Email = users.Email,
                           Name = users.Name,
-                          Punctuation = users.Punctuation
+                          Punctuation = users.Punctuation,
+
                       }).OrderByDescending(x => x.Punctuation).Take(10);
 
         return result;
 
     }
-
     public async Task<DefaultResponse> DeleteUser(string email)
     {
         var response = new DefaultResponse();
@@ -235,6 +181,23 @@ public class IdentityService : IIdentityService
             return false;
 
         return true;
+    }
+    public async Task<DefaultResponse> ConfirmEmail(string token, string idUser)
+    {
+        var response = new DefaultResponse();
+        _userManager.RegisterTokenProvider("default", new EmailConfirmationTokenProvider<ApplicationUser>());
+
+        var user = await _userManager.FindByIdAsync(idUser);
+        var result = await _userManager.ConfirmEmailAsync(user, token);
+        if (!result.Succeeded)
+        {
+            response.Errors.AddError("Erro ao confirmar email.");
+            response.Sucess = false;
+            return response;
+        }
+        response.Sucess = true;
+
+        return response;
     }
     private async Task<UserLoginResponse> GerarCredenciais(string email)
     {
@@ -287,5 +250,50 @@ public class IdentityService : IIdentityService
 
         return claims;
     }
+    public async Task<string> GenerateEmailToken(string email)
+    {
+        var result = await InsertEmailInUser(email);
+        if (!result)
+            return null;
+
+        _userManager.RegisterTokenProvider("default", new EmailConfirmationTokenProvider<ApplicationUser>());
+
+        var user = await _userManager.FindByEmailAsync(email);
+
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        var link = $"https://pic-enfermagem-frontend.vercel.app?{token}";
+
+        _emailSenderService.SendEmail(user.Name, user.Email, link);
+
+        return link;
+    }
+
+    private async Task<bool> InsertEmailInUser(string email)
+    {
+        var user = await _userManager.FindByIdAsync(_userId);
+        user.Email = email;
+
+        await _userManager.UpdateAsync(user);
+
+        var result = await _context.SaveChangesAsync();
+
+        if (result > 0)
+            return false;
+
+        return true;
+    }
+
+    #region Aux
+    private async Task<string> ValidateStudentCode(string studentCode)
+    {
+        var student = await _studentsDatas.Where(x => x.StudentCode == studentCode).SingleOrDefaultAsync();
+
+        if (student is null)
+            return null;
+
+        return student.Name;
+    }
+
+    #endregion
 
 }

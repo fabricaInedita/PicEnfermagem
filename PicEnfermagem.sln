@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PicEnfermagem.Application",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PicEnfermagem.Infraestrutura", "PicEnfermagem.Infraestrutura\PicEnfermagem.Infraestrutura.csproj", "{3C289B41-224B-4A4C-B23F-0B59321BCDE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PicEnfermagem.Identity", "PicEnfermagem.Identity\PicEnfermagem.Identity.csproj", "{77C39BAE-33D3-4AB7-95F1-E1169B2E511E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PicEnfermagem.Identity", "PicEnfermagem.Identity\PicEnfermagem.Identity.csproj", "{77C39BAE-33D3-4AB7-95F1-E1169B2E511E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

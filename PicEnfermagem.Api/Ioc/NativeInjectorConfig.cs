@@ -29,7 +29,10 @@ public static class NativeInjectorConfig
         //Services
         services.AddScoped<IQuestionService, QuestionService>();
         services.AddScoped<ICategoryService, CategoryService>();
-        services.AddScoped<IIdentityService, IdentityService>();
+        services.AddTransient<IIdentityService, IdentityService>();
+        services.AddTransient<IEmailSenderService, EmailSenderService>();
+
+        services.AddTransient(provider => new Lazy<IIdentityService>(() => provider.GetRequiredService<IIdentityService>()));
         services.AddScoped<IAnswerService, AnswerService>();
 
         //Repositories
