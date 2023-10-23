@@ -71,12 +71,12 @@ public class UserController : ControllerBase
 
     [HttpPost]
     [Route("api/user/confirmEmail")]
-    public async Task<IActionResult> ConfirmUserEmail(string token, string idUser)
+    public async Task<IActionResult> ConfirmUserEmail(ConfirmEmail model)
     {
         if (!ModelState.IsValid)
             return StatusCode(StatusCodes.Status400BadRequest);
 
-        var result = await _identityService.Value.ConfirmEmail(token, idUser);
+        var result = await _identityService.Value.ConfirmEmail(model.Token, model.UserId);
 
         return Ok(result);
     }
