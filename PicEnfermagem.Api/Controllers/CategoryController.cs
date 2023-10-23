@@ -1,20 +1,10 @@
-﻿using iTextSharp.text.pdf;
-using iTextSharp.text;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using PicEnfermagem.Application.DTOs.Category;
 using PicEnfermagem.Application.Interfaces;
 using PicEnfermagem.Domain.Entities;
 using PicEnfermagem.Infraestrutura.Context;
-using RestSharp;
-using System.Reflection.Metadata;
-using System;
-using System.IO;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
-using Document = iTextSharp.text.Document;
 
 namespace PicEnfermagem.Api.Controllers;
 

@@ -15,5 +15,7 @@ public interface IIdentityService
     Task<IEnumerable<UserResponse>> GetRank();
     Task<bool> PostAnswer(AnswerInsertRequest dto, ClaimsPrincipal claimUser);
     Task<DefaultResponse> ConfirmEmail(string token, string idUser);
-    Task<string> GenerateEmailToken(string email);
+    Task IssueCertificate();
+    Task<DefaultResponse> ResetPasswordAsync(UserResetPassword model);
+    Task GenarateRefreshPasswordToken(string email);
 }

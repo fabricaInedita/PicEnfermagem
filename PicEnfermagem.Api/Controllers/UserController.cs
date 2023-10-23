@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PicEnfermagem.Application.DTOs.User;
 using PicEnfermagem.Application.Interfaces;
 
@@ -72,8 +73,6 @@ public class UserController : ControllerBase
     [Route("api/user/confirmEmail")]
     public async Task<IActionResult> ConfirmUserEmail(string token, string idUser)
     {
-        //no click do botao confirmar email
-        //após confirmação feita com sucesso enviar certificado
         if (!ModelState.IsValid)
             return StatusCode(StatusCodes.Status400BadRequest);
 
@@ -82,14 +81,35 @@ public class UserController : ControllerBase
         return Ok(result);
     }
 
-    //no click do botão emitir certificado
-
     [HttpPost]
     [Route("api/user/certicate")]
-    public async Task<IActionResult> IssueCertificate(string email)
+    [Authorize]
+    public async Task<IActionResult> IssueCertificateAsync()
     {
-        var result = await _identityService.Value.GenerateEmailToken(email);
+        await _identityService.Value.IssueCertificate();
 
         return Ok();
+    }
+
+    [HttpPost]
+    [Route("api/user/send_reset_password_token")]
+    public async Task<IActionResult> SendResetPasswordTokenAsync(string email)
+    {
+        await _identityService.Value.GenarateRefreshPasswordToken(email);
+
+        return Ok();
+    }
+
+    [HttpPatch]
+    [Route("api/user/reset_password")]
+    public async Task<IActionResult> ResetPasswordAsync(UserResetPassword model)
+    {
+        var response = await _identityService.Value.ResetPasswordAsync(model);
+
+        if (!response.Sucess)
+            return BadRequest(response.Errors);
+
+        return Ok();
+
     }
 }

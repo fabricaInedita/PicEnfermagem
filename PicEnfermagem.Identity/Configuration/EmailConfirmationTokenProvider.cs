@@ -20,8 +20,8 @@ public class EmailConfirmationTokenProvider<TUser> : IUserTwoFactorTokenProvider
     }
     private string GenerateToken(ApplicationUser user, string purpose)
     {
-        string secretString = "coffeIsGood";
-        return secretString + user.Email + purpose + user.Id;
+        string secretString = "368ED5CE-F6EA-4650-9089-C74466660DE8";
+        return secretString + user.Email + purpose + "&userid=" + user.Id;
     }
 
     public Task<string> GenerateAsync(string purpose, UserManager<TUser> manager, TUser user)

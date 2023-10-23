@@ -11,6 +11,7 @@ using PicEnfermagem.Domain.Factories;
 using PicEnfermagem.Identity.Configuration;
 using PicEnfermagem.Identity.Utils;
 using PicEnfermagem.Infraestrutura.Context;
+using PicEnfermagem.Infraestrutura.Migrations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -84,7 +85,8 @@ public class IdentityService : IIdentityService
             UserName = userRegister.Username,
             Name = response,
             Course = "ENFERMAGEM",
-            StudentCode = userRegister.Username
+            StudentCode = userRegister.Username,
+            Email = userRegister.Email
 
         };
 
@@ -118,6 +120,17 @@ public class IdentityService : IIdentityService
                 }
 
             }
+        }
+        else
+        {
+            _userManager.RegisterTokenProvider("default", new EmailConfirmationTokenProvider<ApplicationUser>());
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var link = $"https://pic-enfermagem-frontend.vercel.app/confirm-email?token={token}";
+
+            _emailSenderService.SendEmail(user.Name, user.Email, link);
+
+            userRegisterResponse.SucessMessage = "Email de confirmação enviado.";
         }
 
         return userRegisterResponse;
@@ -250,37 +263,39 @@ public class IdentityService : IIdentityService
 
         return claims;
     }
-    public async Task<string> GenerateEmailToken(string email)
-    {
-        var result = await InsertEmailInUser(email);
-        if (!result)
-            return null;
-
-        _userManager.RegisterTokenProvider("default", new EmailConfirmationTokenProvider<ApplicationUser>());
-
-        var user = await _userManager.FindByEmailAsync(email);
-
-        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        var link = $"https://pic-enfermagem-frontend.vercel.app?{token}";
-
-        _emailSenderService.SendEmail(user.Name, user.Email, link);
-
-        return link;
-    }
-
-    private async Task<bool> InsertEmailInUser(string email)
+    public async Task IssueCertificate()
     {
         var user = await _userManager.FindByIdAsync(_userId);
-        user.Email = email;
 
-        await _userManager.UpdateAsync(user);
+        _emailSenderService.SendCertificateEmail(user.Name, user.Email);
+    }
 
-        var result = await _context.SaveChangesAsync();
+    public async Task GenarateRefreshPasswordToken(string email)
+    {
+        var user = await _userManager.FindByIdAsync(_userId);
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-        if (result > 0)
-            return false;
+        var link = $"https://pic-enfermagem-frontend.vercel.app/change-password?token={token}";
 
-        return true;
+        _emailSenderService.SendResetPasswordEmail(user.Name, email, link);
+    }
+
+    public async Task<DefaultResponse> ResetPasswordAsync(UserResetPassword model)
+    {
+        var response = new DefaultResponse();
+
+        var user = await _userManager.FindByIdAsync(_userId);
+        var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+
+        if (!result.Succeeded)
+        {
+            response.Sucess = false;
+            response.Errors.AddError("Erro ao mudar senha");
+            return response;
+        }
+
+        response.Sucess = true;
+        return response;
     }
 
     #region Aux

@@ -10,4 +10,7 @@ public class UserInsertRequest
     public string Password { get; set; }
     [Compare(nameof(Password), ErrorMessage = "As senhas devem ser iguais.")]
     public string ConfirmPassword { get; set; }
+    [Required(ErrorMessage = "O email deve ser informado.")]
+    [EmailAddress(ErrorMessage = "Informe um email válido.")]
+    public string Email { get; set; }
 }
