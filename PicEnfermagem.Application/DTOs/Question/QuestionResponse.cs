@@ -16,5 +16,6 @@ public sealed class QuestionResponse
 public sealed class QuestionResponseList
 {
     public double Punctuation { get; set; }
+    public DateTime? InitialFormDate { get; set; }
     public IEnumerable<QuestionResponse> QuestionResponses { get; set; }
 }

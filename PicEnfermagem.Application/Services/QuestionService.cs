@@ -12,14 +12,16 @@ public class QuestionService : IQuestionService
 {
     private readonly IQuestionRepository _questionRep;
     private readonly ICategoryRepository _categoryRep;
+    private readonly IGameSettingRepository _gameSettingRep;
     private readonly IAnswerRepository _answerRep;
     private readonly IIdentityService _userService;
-    public QuestionService(IQuestionRepository questionRep, ICategoryRepository categoryRep, IAnswerRepository answerRep, IIdentityService userService)
+    public QuestionService(IQuestionRepository questionRep, ICategoryRepository categoryRep, IAnswerRepository answerRep, IIdentityService userService, IGameSettingRepository gameSettingRep)
     {
         _questionRep = questionRep;
         _categoryRep = categoryRep;
         _answerRep = answerRep;
         _userService = userService;
+        _gameSettingRep = gameSettingRep;
     }
 
     public async Task<bool> InsertAsync(QuestionInsertRequest questionDto)
@@ -50,10 +52,13 @@ public class QuestionService : IQuestionService
             questions.Remove(questionResponse);
         }
 
+        var initialDate = (await _gameSettingRep.GetAllAsync()).SingleOrDefault().FirstQuestions;
         var questionResponseList = new QuestionResponseList()
         {
             Punctuation = await _userService.GetPunctuationByUserLogged(),
-            QuestionResponses = questions
+            QuestionResponses = questions,
+            InitialFormDate = initialDate
+            
         };
 
         return questionResponseList;
