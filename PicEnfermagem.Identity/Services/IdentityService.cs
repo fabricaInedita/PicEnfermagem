@@ -184,7 +184,7 @@ public class IdentityService : IIdentityService
     public async Task<bool> PostAnswer(AnswerInsertRequest dto, ClaimsPrincipal claimUser)
     {
         var user = await _userManager.GetUserAsync(claimUser);
-        var answer = AnswerFactory.Create(dto.QuestionId, dto.Punctuation);
+        var answer = AnswerFactory.Create(dto.QuestionId, dto.Punctuation, dto.AnswerTime);
 
         user.Answers.Add(answer);
 
