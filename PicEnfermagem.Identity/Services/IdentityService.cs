@@ -272,7 +272,7 @@ public class IdentityService : IIdentityService
 
     public async Task GenarateRefreshPasswordToken(string email)
     {
-        var user = await _userManager.FindByEmailAsync(_userId);
+        var user = await _userManager.FindByEmailAsync(email);
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
         var link = $"https://pic-enfermagem-frontend.vercel.app/change-password?token={token}";

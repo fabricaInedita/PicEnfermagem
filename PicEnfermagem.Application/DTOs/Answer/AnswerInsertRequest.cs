@@ -5,4 +5,5 @@ public sealed class AnswerInsertRequest
     public int QuestionId { get; set; }
     public int AlternativeId { get; set; }
     public double Punctuation { get; set; }
+    public int AnswerTime { get; set; }
 }

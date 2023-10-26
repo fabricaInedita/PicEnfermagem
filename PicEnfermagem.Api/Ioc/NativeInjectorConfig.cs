@@ -40,6 +40,7 @@ public static class NativeInjectorConfig
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IAnswerRepository, AnswerRepository>();
         services.AddScoped<IAlternativeRepository, AlternativeRepository>();
+        services.AddScoped<IGameSettingRepository, GameSettingRepository>();
 
         //Cors
         services.AddCors(options =>

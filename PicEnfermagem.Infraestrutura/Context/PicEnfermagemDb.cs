@@ -19,6 +19,7 @@ public class PicEnfermagemDb : IdentityDbContext<ApplicationUser>
     public DbSet<Answer> answer { get; set; }
     public DbSet<Category> category { get; set; }
     public DbSet<StudentsData> studentdata { get; set; }
+    public DbSet<GameSetting> gamesetting { get; set; }
     public DbSet<ApplicationUser> user { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

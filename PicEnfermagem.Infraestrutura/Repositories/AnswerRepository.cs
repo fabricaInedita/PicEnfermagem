@@ -13,23 +13,28 @@ public class AnswerRepository : IAnswerRepository
 {
     private readonly PicEnfermagemDb _context;
     private readonly DbSet<Answer> _answer;
-    private readonly IQuestionRepository _questionRepository;
+    private readonly DbSet<Question> _question;
+    private readonly DbSet<GameSetting> _gameSetting;
     private readonly UserManager<ApplicationUser> _user;
     private string _userId;
 
-    public AnswerRepository(PicEnfermagemDb context, UserManager<ApplicationUser> user, IQuestionRepository questionRepository)
+    public AnswerRepository(PicEnfermagemDb context, UserManager<ApplicationUser> user)
     {
         _context = context;
         _answer = _context.Set<Answer>();
         _user = user;
         _userId = _context._contextAcessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-        _questionRepository = questionRepository;
+        _question = _context.Set<Question>();
+        _gameSetting = _context.Set<GameSetting>();
     }
 
     public async Task<double> PostAnswer(Answer entity, ClaimsPrincipal claimUser, AlternativeResponse alternativeResponse)
     {
+        await VerifyEndQuestionsAsync();
+
         var user = await _user.GetUserAsync(claimUser);
         double punctuation = user.Punctuation;
+
         if (alternativeResponse.IsCorrect)
             punctuation = await CalculatePunctuationUser(user, entity);
 
@@ -65,4 +70,25 @@ public class AnswerRepository : IAnswerRepository
 
         return ponctuationActual;
     }
+
+    #region AUX
+    private async Task<bool> VerifyEndQuestionsAsync()
+    {
+        var questionsTotal = _question.ToList().Count;
+        var answerTotal = (await GetAll()).ToList().Count;
+
+        if(questionsTotal == answerTotal)
+        {
+            var gameSetting = await _gameSetting.FindAsync(_userId);
+            gameSetting.EndQuestions = DateTime.Now;
+
+            _gameSetting.Update(gameSetting);
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+        return false;
+    }
+    #endregion
 }

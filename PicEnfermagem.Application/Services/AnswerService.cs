@@ -19,7 +19,10 @@ public class AnswerService : IAnswerService
 
     public async Task<AnswerResponse> PostAnswer(AnswerInsertRequest dto, ClaimsPrincipal claimUser)
     {
-        var answer = AnswerFactory.Create(dto.QuestionId, dto.Punctuation);
+        var answer = AnswerFactory.Create
+            (dto.QuestionId, 
+            dto.Punctuation,
+            dto.AnswerTime);
 
         var question = (await _alternativeRepository.GetByIdAsync(dto.QuestionId));
 

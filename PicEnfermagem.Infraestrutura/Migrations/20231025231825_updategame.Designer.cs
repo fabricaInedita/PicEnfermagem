@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PicEnfermagem.Infraestrutura.Context;
@@ -11,9 +12,11 @@ using PicEnfermagem.Infraestrutura.Context;
 namespace PicEnfermagem.Infraestrutura.Migrations
 {
     [DbContext(typeof(PicEnfermagemDb))]
-    partial class PicEnfermagemDbModelSnapshot : ModelSnapshot
+    [Migration("20231025231825_updategame")]
+    partial class updategame
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

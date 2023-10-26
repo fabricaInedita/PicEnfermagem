@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PicEnfermagem.Infraestrutura.Context;
@@ -11,9 +12,11 @@ using PicEnfermagem.Infraestrutura.Context;
 namespace PicEnfermagem.Infraestrutura.Migrations
 {
     [DbContext(typeof(PicEnfermagemDb))]
-    partial class PicEnfermagemDbModelSnapshot : ModelSnapshot
+    [Migration("20231024010851_gamesettingupdate")]
+    partial class gamesettingupdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -328,10 +331,10 @@ namespace PicEnfermagem.Infraestrutura.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("EndQuestions")
+                    b.Property<DateTime>("EndQuestions")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime?>("FirstQuestions")
+                    b.Property<DateTime>("FirstQuestions")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("RegistrationDate")
