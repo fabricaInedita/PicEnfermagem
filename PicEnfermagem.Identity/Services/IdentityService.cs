@@ -86,39 +86,50 @@ public class IdentityService : IIdentityService
             Name = response,
             Course = "ENFERMAGEM",
             StudentCode = userRegister.Username,
-            Email = userRegister.Email
-
+            Email = userRegister.Email,
+            RegistrationDate = DateTime.Now.ToUniversalTime(),
         };
 
         IdentityResult result = await _userManager.CreateAsync(user, userRegister.Password);
 
         if (!result.Succeeded)
         {
-            foreach (var erroAtual in result.Errors)
+            if(result.Errors.Any(i=> i.Code== "DuplicateUserName"))
             {
-                switch (erroAtual.Code)
+                var currentUser = await _userManager.FindByNameAsync(userRegister.Username);
+
+                if (currentUser.EmailConfirmed == false && currentUser.RegistrationDate.ToUniversalTime().AddMinutes(5) < DateTime.Now.ToUniversalTime())
                 {
-                    case "PasswordRequiresNonAlphanumeric":
-                        userRegisterResponse.Errors.AddError("A senha precisa conter pelo menos um caracter especial - ex( * | ! ).");
-                        break;
 
-                    case "PasswordRequiresDigit":
-                        userRegisterResponse.Errors.AddError("A senha precisa conter pelo menos um número (0 - 9).");
-                        break;
+                    var deletedUser = await _userManager.DeleteAsync(currentUser);
 
-                    case "PasswordRequiresUpper":
-                        userRegisterResponse.Errors.AddError("A senha precisa conter pelo menos um caracter em maiúsculo.");
-                        break;
+                    if (deletedUser.Succeeded)
+                    {
+                        result = await _userManager.CreateAsync(user, userRegister.Password);
 
-                    case "DuplicateUserName":
-                        userRegisterResponse.Errors.AddError("O código do aluno informado já foi cadastrado!");
-                        break;
+                        if (!result.Succeeded) {
+                            ValidateErrorsIdentity(result.Errors, userRegisterResponse);
+                        }
 
-                    default:
-                        userRegisterResponse.Errors.AddError("Erro ao criar usuário.");
-                        break;
+                        else
+                        {
+                            _userManager.RegisterTokenProvider("default", new EmailConfirmationTokenProvider<ApplicationUser>());
+
+                            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                            var link = $"https://pic-enfermagem-frontend.vercel.app/confirm-email?token={token}";
+
+                            _emailSenderService.SendEmail(user.Name, user.Email, link);
+
+                            userRegisterResponse.SucessMessage = "Email de confirmação enviado.";
+                        }
+                    }
                 }
 
+                userRegisterResponse.Errors.AddError("O código do aluno informado já foi cadastrado!");
+            }
+            else
+            {
+                ValidateErrorsIdentity(result.Errors, userRegisterResponse);
             }
         }
         else
@@ -310,5 +321,28 @@ public class IdentityService : IIdentityService
     }
 
     #endregion
+    public void ValidateErrorsIdentity(IEnumerable<IdentityError> errors, UserRegisterResponse userRegisterResponse)
+    {
+        foreach (var erroAtual in errors)
+        {
+            switch (erroAtual.Code)
+            {
+                case "PasswordRequiresNonAlphanumeric":
+                    userRegisterResponse.Errors.AddError("A senha precisa conter pelo menos um caracter especial - ex( * | ! ).");
+                    break;
 
+                case "PasswordRequiresDigit":
+                    userRegisterResponse.Errors.AddError("A senha precisa conter pelo menos um número (0 - 9).");
+                    break;
+
+                case "PasswordRequiresUpper":
+                    userRegisterResponse.Errors.AddError("A senha precisa conter pelo menos um caracter em maiúsculo.");
+                    break;
+
+                default:
+                    userRegisterResponse.Errors.AddError("Erro ao criar usuário.");
+                    break;
+            }
+        }
+    }
 }
