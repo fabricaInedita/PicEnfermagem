@@ -54,7 +54,7 @@ public class UserController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var result = await _identityService.Value.RegisterUser(userRegisterRequest);
+        var result = await _identityService.Value.PreparaUser(userRegisterRequest);
 
         if (result.Success)
             return Ok(result);

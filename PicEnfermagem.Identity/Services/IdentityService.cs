@@ -68,84 +68,6 @@ public class IdentityService : IIdentityService
 
         return userLoginResponse;
     }
-    public async Task<UserRegisterResponse> RegisterUser(UserInsertRequest userRegister)
-    {
-        UserRegisterResponse userRegisterResponse = new UserRegisterResponse();
-
-        var response = await ValidateStudentCode(userRegister.Username);
-
-        if (response is null)
-        {
-            userRegisterResponse.Errors.AddError("O código do aluno informado não existe ou esta incorreto");
-            return userRegisterResponse;
-        }
-
-        var user = new ApplicationUser()
-        {
-            UserName = userRegister.Username,
-            Name = response,
-            Course = "ENFERMAGEM",
-            StudentCode = userRegister.Username,
-            Email = userRegister.Email,
-            RegistrationDate = DateTime.Now.ToUniversalTime(),
-        };
-
-        IdentityResult result = await _userManager.CreateAsync(user, userRegister.Password);
-
-        if (!result.Succeeded)
-        {
-            if(result.Errors.Any(i=> i.Code== "DuplicateUserName"))
-            {
-                var currentUser = await _userManager.FindByNameAsync(userRegister.Username);
-
-                if (currentUser.EmailConfirmed == false && currentUser.RegistrationDate.ToUniversalTime().AddMinutes(5) < DateTime.Now.ToUniversalTime())
-                {
-
-                    var deletedUser = await _userManager.DeleteAsync(currentUser);
-
-                    if (deletedUser.Succeeded)
-                    {
-                        result = await _userManager.CreateAsync(user, userRegister.Password);
-
-                        if (!result.Succeeded) {
-                            ValidateErrorsIdentity(result.Errors, userRegisterResponse);
-                        }
-
-                        else
-                        {
-                            _userManager.RegisterTokenProvider("default", new EmailConfirmationTokenProvider<ApplicationUser>());
-
-                            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                            var link = $"https://pic-enfermagem-frontend.vercel.app/confirm-email?token={token}";
-
-                            _emailSenderService.SendEmail(user.Name, user.Email, link);
-
-                            userRegisterResponse.SucessMessage = "Email de confirmação enviado.";
-                        }
-                    }
-                }
-
-                userRegisterResponse.Errors.AddError("O código do aluno informado já foi cadastrado!");
-            }
-            else
-            {
-                ValidateErrorsIdentity(result.Errors, userRegisterResponse);
-            }
-        }
-        else
-        {
-            _userManager.RegisterTokenProvider("default", new EmailConfirmationTokenProvider<ApplicationUser>());
-
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var link = $"https://pic-enfermagem-frontend.vercel.app/confirm-email?token={token}";
-
-            _emailSenderService.SendEmail(user.Name, user.Email, link);
-
-            userRegisterResponse.SucessMessage = "Email de confirmação enviado.";
-        }
-
-        return userRegisterResponse;
-    }
     public async Task<IEnumerable<UserResponse>> GetUser()
     {
         var result = (from users in _userManager.Users
@@ -309,7 +231,7 @@ public class IdentityService : IIdentityService
         return response;
     }
 
-    #region Aux
+    #region Validations
     private async Task<string> ValidateStudentCode(string studentCode)
     {
         var student = await _studentsDatas.Where(x => x.StudentCode == studentCode).SingleOrDefaultAsync();
@@ -319,9 +241,7 @@ public class IdentityService : IIdentityService
 
         return student.Name;
     }
-
-    #endregion
-    public void ValidateErrorsIdentity(IEnumerable<IdentityError> errors, UserRegisterResponse userRegisterResponse)
+    private void ValidateErrorsIdentity(IEnumerable<IdentityError> errors, UserRegisterResponse userRegisterResponse)
     {
         foreach (var erroAtual in errors)
         {
@@ -339,10 +259,106 @@ public class IdentityService : IIdentityService
                     userRegisterResponse.Errors.AddError("A senha precisa conter pelo menos um caracter em maiúsculo.");
                     break;
 
+                case "PasswordRequiresLower":
+                    userRegisterResponse.Errors.AddError("A senha precisa conter pelo menos um caracter em minusculo.");
+                    break;
+
                 default:
                     userRegisterResponse.Errors.AddError("Erro ao criar usuário.");
                     break;
             }
         }
     }
+
+    private async Task PrepareSendingEmail(UserRegisterResponse userResponse, ApplicationUser user)
+    {
+        _userManager.RegisterTokenProvider("default", new EmailConfirmationTokenProvider<ApplicationUser>());
+
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        var link = $"https://pic-enfermagem-frontend.vercel.app/confirm-email?token={token}";
+
+        _emailSenderService.SendEmail(user.Name, user.Email, link);
+
+        userResponse.SucessMessage = "Email de confirmação enviado.";
+    }
+
+    #endregion
+
+    #region CRUD
+    public async Task<UserRegisterResponse> PreparaUser(UserInsertRequest userRegister)
+    {
+        UserRegisterResponse userRegisterResponse = new UserRegisterResponse();
+
+        var response = await ValidateStudentCode(userRegister.Username);
+
+        if (response is null)
+        {
+            userRegisterResponse.Errors.AddError("O código do aluno informado não existe ou esta incorreto");
+            return userRegisterResponse;
+        }
+
+        var user = new ApplicationUser()
+        {
+            UserName = userRegister.Username,
+            Name = response,
+            Course = "ENFERMAGEM",
+            StudentCode = userRegister.Username,
+            Email = userRegister.Email,
+            RegistrationDate = DateTime.Now.ToUniversalTime(),
+        };
+
+        return await InsertUserAsync(user, userRegister);
+    }
+    
+    public async Task<UserRegisterResponse> InsertUserAsync(ApplicationUser user, UserInsertRequest userRegister)
+    {
+        var userRegisterResponse = new UserRegisterResponse();
+
+        var result = await _userManager.CreateAsync(user, userRegister.Password);
+
+        if (result.Succeeded)
+        {
+            await PrepareSendingEmail(userRegisterResponse, user);
+            return userRegisterResponse;
+
+        }
+
+        return await RecreateUser(result, userRegister, user);
+    }
+
+    private async Task<UserRegisterResponse> RecreateUser(IdentityResult result, UserInsertRequest userRegister, ApplicationUser user)
+    {
+        var userRegisterResponse = new UserRegisterResponse();
+
+        if (result.Errors.Any(i => i.Code == "DuplicateUserName"))
+        {
+            var currentUser = await _userManager.FindByNameAsync(userRegister.Username);
+
+            if (currentUser.EmailConfirmed == false && currentUser.RegistrationDate.ToUniversalTime().AddMinutes(5) < DateTime.Now.ToUniversalTime())
+            {
+                var deletedUser = await _userManager.DeleteAsync(currentUser);
+
+                if (deletedUser.Succeeded)
+                {
+                    result = await _userManager.CreateAsync(user, userRegister.Password);
+
+                    if (!result.Succeeded)
+                        ValidateErrorsIdentity(result.Errors, userRegisterResponse);
+                    else
+                    {
+                        await PrepareSendingEmail(userRegisterResponse, user);
+                        return userRegisterResponse;    
+                    }
+                }
+            }
+            userRegisterResponse.Errors.AddError("O código do aluno informado já foi cadastrado!");
+        }
+        else
+        {
+            ValidateErrorsIdentity(result.Errors, userRegisterResponse);
+        }
+
+        return userRegisterResponse;
+    }
+    #endregion
 }
