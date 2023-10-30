@@ -106,7 +106,7 @@ public class QuestionService : IQuestionService
             RegistrationDate = DateTime.Now.ToUniversalTime(),
         };
 
-        var state = _userService.GetUserByUsername("QuestionaryIsValid");
+        var state = await _userService.GetUserByUsername("QuestionaryIsValid");
 
         if (state == null)
         {
