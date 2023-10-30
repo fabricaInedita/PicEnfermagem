@@ -18,6 +18,7 @@ public interface IIdentityService
     Task<bool> PostAnswer(AnswerInsertRequest dto, ClaimsPrincipal claimUser);
     Task<DefaultResponse> ConfirmEmail(string token, string idUser);
     Task IssueCertificate();
+    void DeleteUserAsync(ApplicationUser user);
     Task<DefaultResponse> ResetPasswordAsync(UserResetPassword model);
     Task GenarateRefreshPasswordToken(string email);
     Task<ApplicationUser> GetUserByUsername(string username);

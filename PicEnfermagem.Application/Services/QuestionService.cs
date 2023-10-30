@@ -116,6 +116,8 @@ public class QuestionService : IQuestionService
         }
         else
         {
+            _userService.DeleteUserAsync(user);
+
             return true;
         }
     }

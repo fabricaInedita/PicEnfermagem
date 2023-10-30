@@ -326,6 +326,11 @@ public class IdentityService : IIdentityService
         return await RecreateUser(result, userRegister, user);
     }
 
+    public async void DeleteUserAsync(ApplicationUser user)
+    {
+        await _userManager.DeleteAsync(user);
+    }
+
     private async Task<UserRegisterResponse> RecreateUser(IdentityResult result, UserInsertRequest userRegister, ApplicationUser user)
     {
         var userRegisterResponse = new UserRegisterResponse();
