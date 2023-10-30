@@ -45,7 +45,7 @@ public class QuestionRepository : IQuestionRepository
 
         var game = (await _gameSettingsRepository.GetAllAsync()).SingleOrDefault();
         var dateFirstQuestion = game.FirstQuestions.Value.AddMinutes(40);
-   
+
         if (dateFirstQuestion > dateTimeActual)
         {
              questions = (from question in _question

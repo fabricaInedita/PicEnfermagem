@@ -1,6 +1,7 @@
 ﻿using PicEnfermagem.Application.DTOs.Alternative;
 using PicEnfermagem.Application.DTOs.Insert;
 using PicEnfermagem.Application.DTOs.Question;
+using PicEnfermagem.Application.DTOs.User;
 using PicEnfermagem.Application.Interfaces;
 using PicEnfermagem.Application.Interfaces.Repository;
 using PicEnfermagem.Domain.Entities;
@@ -39,20 +40,27 @@ public class QuestionService : IQuestionService
 
         return await _questionRep.InsertAsync(question);
     }
-
     public async Task<QuestionResponseList> GetAllAsync()
     {
-        var questions = (await _questionRep.GetAllAsync()).ToList();
-        var answers = await _answerRep.GetAll();
+        var questions = new List<QuestionResponse>();
 
-        foreach(var item in answers) 
-        {
-            var questionResponse = questions.Where(x => x.Id == item.QuestionId).FirstOrDefault();
+        var questionaryIsValid = await _userService.GetUserByUsername("QuestionaryIsValid");
 
-            questions.Remove(questionResponse);
+        if (questionaryIsValid == null) 
+        { 
+            questions = (await _questionRep.GetAllAsync()).ToList();
+            var answers = await _answerRep.GetAll();
+
+            foreach (var item in answers)
+            {
+                var questionResponse = questions.Where(x => x.Id == item.QuestionId).FirstOrDefault();
+
+                questions.Remove(questionResponse);
+            }
         }
 
         var initialDate = (await _gameSettingRep.GetAllAsync()).SingleOrDefault().FirstQuestions;
+
         var questionResponseList = new QuestionResponseList()
         {
             Punctuation = await _userService.GetPunctuationByUserLogged(),
@@ -78,4 +86,51 @@ public class QuestionService : IQuestionService
 
         return alternatives;
     }
+    public async Task<bool> ChangeQuestionaryState()
+    {
+        var requestUserData = new UserInsertRequest()
+        {
+            ConfirmPassword = "OkAny12345*.",
+            Password = "OkAny12345*.",
+            Email = "user.example.com.br",
+            Username = "QuestionaryIsValid"
+        };
+
+        var user = new ApplicationUser()
+        {
+            UserName = requestUserData.Username,
+            Name = requestUserData.Username,
+            Course = "ENFERMAGEM",
+            StudentCode = requestUserData.Username,
+            Email = requestUserData.Email,
+            RegistrationDate = DateTime.Now.ToUniversalTime(),
+        };
+
+        var state = _userService.GetUserByUsername("QuestionaryIsValid");
+
+        if (state == null)
+        {
+            await _userService.InsertUserAsync(user, requestUserData);
+
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    public async Task<bool> GetQuestionaryState()
+    {
+        var state = _userService.GetUserByUsername("QuestionaryIsValid");
+
+        if (state == null)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 }

@@ -361,4 +361,11 @@ public class IdentityService : IIdentityService
         return userRegisterResponse;
     }
     #endregion
+
+    public async Task<ApplicationUser> GetUserByUsername(string username)
+    {
+        var user = await _userManager.FindByNameAsync(username);
+
+        return user;
+    }
 }

@@ -1,6 +1,7 @@
 ﻿
 using PicEnfermagem.Application.DTOs.Answer;
 using PicEnfermagem.Application.DTOs.User;
+using PicEnfermagem.Domain.Entities;
 using System.Security.Claims;
 
 namespace PicEnfermagem.Application.Interfaces;
@@ -19,4 +20,6 @@ public interface IIdentityService
     Task IssueCertificate();
     Task<DefaultResponse> ResetPasswordAsync(UserResetPassword model);
     Task GenarateRefreshPasswordToken(string email);
+    Task<ApplicationUser> GetUserByUsername(string username);
+    Task<UserRegisterResponse> InsertUserAsync(ApplicationUser user, UserInsertRequest userRegister);
 }
