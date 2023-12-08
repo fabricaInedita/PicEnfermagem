@@ -56,6 +56,7 @@ public class QuestionRepository : IQuestionRepository
                              {
                                  Id = question.Id,
                                  Statement = question.Statement,
+                                 Explanation = question.Explanation,
                                  Difficulty = question.Difficulty,
                                  MaxPunctuation = question.MaxPunctuation,
                                  MinPunctuation = question.MinPunctuation,
@@ -93,7 +94,8 @@ public class QuestionRepository : IQuestionRepository
                                  Description = question.Category.Description,
                                  Name = question.Category.Name
                              },
-                             Statement = question.Statement
+                             Statement = question.Statement,
+                             Explanation = question.Explanation,
                          }).AsEnumerable();
 
         return questions;

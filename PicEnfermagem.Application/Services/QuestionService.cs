@@ -33,6 +33,7 @@ public class QuestionService : IQuestionService
 
         var question = QuestionFactory
             .Create(questionDto.statement,
+            questionDto.explanation,
             alternatives, category,
             questionDto.MaxPunctuation,
             questionDto.MinPunctuation,

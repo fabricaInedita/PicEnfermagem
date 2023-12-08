@@ -7,6 +7,7 @@ public sealed class QuestionResponse
 {
     public int Id { get; set; }
     public string Statement { get; set; }
+    public string Explanation { get; set; }
     public int MaxPunctuation { get; set; }
     public int MinPunctuation { get; set; }
     public string Difficulty { get; set; }
